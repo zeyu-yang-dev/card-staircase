@@ -1,6 +1,6 @@
-package io.github.zeyu.staircasecardgame
+package io.github.zeyuyangdev.staircasecardgame
 
-import io.github.zeyu.staircasecardgame.view.SCGApplication
+import io.github.zeyuyangdev.staircasecardgame.view.SCGApplication
 
 /**
  * This is the entrance of the game.

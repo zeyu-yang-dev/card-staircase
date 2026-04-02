@@ -1,15 +1,14 @@
-package io.github.zeyu.staircasecardgame.view.panes
+package io.github.zeyuyangdev.staircasecardgame.view.panes
 
-import io.github.zeyu.staircasecardgame.entity.*
-import io.github.zeyu.staircasecardgame.view.CardImageLoader
-import io.github.zeyu.staircasecardgame.view.GameScene
-import io.github.zeyu.staircasecardgame.view.GameScene.State
-import io.github.zeyu.staircasecardgame.service.Refreshable
-import io.github.zeyu.staircasecardgame.service.RootService
+import io.github.zeyuyangdev.staircasecardgame.entity.*
+import io.github.zeyuyangdev.staircasecardgame.view.*
+import io.github.zeyuyangdev.staircasecardgame.view.GameScene.State
 
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.layoutviews.Pane
-import tools.aqua.bgw.animation.FlipAnimation
+import io.github.zeyuyangdev.staircasecardgame.service.Refreshable
+import io.github.zeyuyangdev.staircasecardgame.service.RootService
+
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.components.uicomponents.Button
@@ -17,52 +16,23 @@ import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.core.Color
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
-
-
-// Element in this pane
-const val CARDS_CALE = 0.75
-const val CARD_WIDTH = 130 * CARDS_CALE
-const val CARD_HEIGHT = 200 * CARDS_CALE
-
-
-const val DIS_BET_CARDS = 5
-const val HORIZ_DIS = CARD_WIDTH + DIS_BET_CARDS
-const val VERTIC_DIS = CARD_HEIGHT + DIS_BET_CARDS
-
-const val BUTTON_WIDTH = 200
-const val BUTTON_HEIGHT = BUTTON_WIDTH / 1.618 / 2
-const val BUTTON_POS_X = ((CARD_WIDTH * 5 + DIS_BET_CARDS * 4) - BUTTON_WIDTH) / 2
-const val BUTTON_POS_Y = -(BUTTON_HEIGHT + DIS_BET_CARDS * 3)
-
-const val PLAYER_LABEL_WIDTH = CARD_WIDTH * 3 + DIS_BET_CARDS * 2
-const val PLAYER_LABEL_HEIGHT = CARD_HEIGHT / 4
-const val PLAYER_LABEL_POS_X = CARD_WIDTH + DIS_BET_CARDS
-// LABEL 1 显示分数
-const val PLAYER_LABEL_1_POS_Y = -(BUTTON_HEIGHT + DIS_BET_CARDS * 6 + PLAYER_LABEL_HEIGHT)
-const val PLAYER_LABEL_2_POS_Y = -(BUTTON_HEIGHT + DIS_BET_CARDS * 6 + PLAYER_LABEL_HEIGHT * 2)
-
+import tools.aqua.bgw.animation.FlipAnimation
 
 
 // Pane properties
-const val POS_X = ((1920 - CARD_WIDTH * 5 - DIS_BET_CARDS * 4) / 2 - CARD_WIDTH * 5 - DIS_BET_CARDS * 4) / 2
-const val POS_Y = 900
-const val WIDTH = CARD_WIDTH * 5 + DIS_BET_CARDS * 4
-const val HEIGHT = CARD_HEIGHT
+const val POS_X_2 = POS_X * 3 + CARD_WIDTH * 10 + DIS_BET_CARDS * 8
 
-
-
-class PanePlayer1(private val rootService: RootService, private val gameScene: GameScene) : Pane<ComponentView>(
-    POS_X, POS_Y, WIDTH, HEIGHT, visual = ColorVisual.TRANSPARENT), Refreshable {
+class PanePlayer2(private val rootService: RootService, private val gameScene: GameScene) : Pane<ComponentView>(
+    POS_X_2, POS_Y, WIDTH, HEIGHT, visual = ColorVisual.TRANSPARENT), Refreshable {
 
     private val cardImageLoader = CardImageLoader()
     private val playerActionService = rootService.playerActionService
 
     private var cardsRevealed: Boolean = false
-    private val playerOfThisPane: Int = 0
+    private val playerOfThisPane: Int = 1
 
     val handCardViews: MutableList<CardView> = mutableListOf()
     val handCardViewsForAnimation: MutableList<CardView> = mutableListOf()
-
 
     /**
      * Creates a Cardview for this pane.
@@ -112,6 +82,8 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
 
 
 
+
+
     val button = Button(
         width = BUTTON_WIDTH,
         height = BUTTON_HEIGHT,
@@ -148,7 +120,6 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
 
             // 当已经选择了一张卡牌时
             if (gameScene.state == State.HAS_SELECTED) {
-
                 gameScene.state = State.HAS_DISCARDED
                 playerActionService.discardCard(gameScene.cardSelected!!)
                 gameScene.cardSelected = null
@@ -178,7 +149,6 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
 
         }
 
-        // 目前只在打出牌后会显示这个状态，弃牌后不会
         if (gameScene.state in setOf(State.HAS_DISCARDED, State.HAS_PLAYED)) {
             button.visual = ColorVisual(55, 55, 55, 0.5)
             button.text = "END TURN"
@@ -214,16 +184,11 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
 
         for (i in 0 until numOfCards) {
             handCardViews[i].apply {
-                val card = handCards[i]
-                // isVisible = false
-                frontVisual = cardImageLoader.frontImageFor(card.suit, card.value)
-                isVisible = true //这是必要的，在抽牌之后需要重新让每一个CardView都显示
-                this.showFront()
-                // visual = frontVisual
+                handCards[i].let { handCard ->
+                    this.frontVisual = cardImageLoader.frontImageFor(handCard.suit, handCard.value)
+                    this.isVisible = true
+                }
             }
-
-
-
         }
 
         // 如果实际只有4张手牌，第5个CardView不可见
@@ -249,6 +214,7 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
         for (cardView in handCardViewsForAnimation) {cardView.isVisible = true}
         for (cardView in handCardViews) {cardView.isVisible = false}
 
+
         for (i in handCardViewsForAnimation.indices) {
             val flipOpenAnimation = FlipAnimation(
                 gameComponentView = handCardViewsForAnimation[i],
@@ -273,7 +239,6 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
                     for (cardView in handCardViewsForAnimation) {cardView.isVisible = false}
                     refreshCardContent()
                     refreshCardSide()
-
 
                 }
             }
@@ -345,8 +310,6 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
 
 
 
-
-
     init {
 
         for (i in 0 until 5) {
@@ -359,7 +322,6 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
                 isVisible = false
             }
         }
-
 
         // 定义每一个CardView的按钮行为
         for (i in handCardViews.indices) {
@@ -378,10 +340,14 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
         }
 
 
+
+
+
         addAll(handCardViews)
         addAll(button)
         addAll(playerLabel1, playerLabel2)
         addAll(handCardViewsForAnimation)
+
 
 
     }
@@ -394,6 +360,7 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
         refreshButton()
         refreshPlayerLable()
 
+
     }
 
     override fun refreshAfterStartTurn() {
@@ -401,6 +368,7 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
         // refreshCardSide()
         refreshButton()
         refreshPlayerLable()
+
     }
 
     override fun refreshAfterDestroyCard() {
@@ -408,6 +376,7 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
         refreshCardSide()
         refreshButton()
         refreshPlayerLable()
+
     }
 
     override fun refreshAfterPlayCard() {
@@ -415,6 +384,7 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
         refreshCardSide()
         refreshButton()
         refreshPlayerLable()
+
     }
 
     override fun refreshAfterDiscardCard() {
@@ -422,6 +392,7 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
         refreshCardSide()
         refreshButton()
         refreshPlayerLable()
+
     }
 
     override fun refreshAfterEndTurn() {
@@ -429,6 +400,7 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
         // refreshCardSide()
         refreshButton()
         refreshPlayerLable()
+
     }
 
     override fun refreshAfterEndGame() {
@@ -436,6 +408,6 @@ class PanePlayer1(private val rootService: RootService, private val gameScene: G
         refreshCardSide()
         refreshButton()
         refreshPlayerLable()
-    }
 
+    }
 }

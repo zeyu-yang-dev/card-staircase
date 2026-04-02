@@ -1,4 +1,4 @@
-package io.github.zeyu.staircasecardgame.entity
+package io.github.zeyuyangdev.staircasecardgame.entity
 
 /**
  * Represents one player in the game.

@@ -1,6 +1,4 @@
-package io.github.zeyu.staircasecardgame.entity
-
-import java.util.*
+package io.github.zeyuyangdev.staircasecardgame.entity
 
 /**
  * Enum to distinguish between the 13 possible values in a french-suited card game:

@@ -1,7 +1,7 @@
-package io.github.zeyu.staircasecardgame.view
+package io.github.zeyuyangdev.staircasecardgame.view
 
-import io.github.zeyu.staircasecardgame.service.Refreshable
-import io.github.zeyu.staircasecardgame.service.RootService
+import io.github.zeyuyangdev.staircasecardgame.service.Refreshable
+import io.github.zeyuyangdev.staircasecardgame.service.RootService
 import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.components.uicomponents.TextField

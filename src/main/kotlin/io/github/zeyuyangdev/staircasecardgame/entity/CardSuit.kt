@@ -1,4 +1,4 @@
-package io.github.zeyu.staircasecardgame.entity
+package io.github.zeyuyangdev.staircasecardgame.entity
 
 /**
  * Enum to distinguish between the four possible suits in a french-suited card game:

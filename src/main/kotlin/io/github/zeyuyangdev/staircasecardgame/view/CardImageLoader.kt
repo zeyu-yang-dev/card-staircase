@@ -1,7 +1,7 @@
-package io.github.zeyu.staircasecardgame.view
+package io.github.zeyuyangdev.staircasecardgame.view
 
-import io.github.zeyu.staircasecardgame.entity.CardSuit
-import io.github.zeyu.staircasecardgame.entity.CardValue
+import io.github.zeyuyangdev.staircasecardgame.entity.CardSuit
+import io.github.zeyuyangdev.staircasecardgame.entity.CardValue
 
 import tools.aqua.bgw.visual.ImageVisual
 

@@ -1,6 +1,6 @@
-package io.github.zeyu.staircasecardgame.service
+package io.github.zeyuyangdev.staircasecardgame.service
 
-import io.github.zeyu.staircasecardgame.entity.*
+import io.github.zeyuyangdev.staircasecardgame.entity.*
 
 
 /**
