@@ -1,7 +1,7 @@
-package io.github.zeyuyangdev.staircasecardgame.view
+package io.github.zeyuyangdev.cardstaircase.view
 
-import io.github.zeyuyangdev.staircasecardgame.service.RootService
-import io.github.zeyuyangdev.staircasecardgame.service.Refreshable
+import io.github.zeyuyangdev.cardstaircase.service.RootService
+import io.github.zeyuyangdev.cardstaircase.service.Refreshable
 
 import tools.aqua.bgw.event.KeyCode
 import tools.aqua.bgw.core.BoardGameApplication
@@ -11,7 +11,7 @@ import tools.aqua.bgw.core.BoardGameApplication
  * Represents the main application.
  * The application initializes the [RootService] and displays the scenes.
  */
-class SCGApplication : BoardGameApplication("Staircase Card Game"), Refreshable {
+class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
 
     /**
      * The root service instance. This is used to call service methods and access the entity layer.

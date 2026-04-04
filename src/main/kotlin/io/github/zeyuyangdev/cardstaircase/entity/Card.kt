@@ -1,4 +1,4 @@
-package io.github.zeyuyangdev.staircasecardgame.entity
+package io.github.zeyuyangdev.cardstaircase.entity
 
 /**
  * Represents a single playing card.

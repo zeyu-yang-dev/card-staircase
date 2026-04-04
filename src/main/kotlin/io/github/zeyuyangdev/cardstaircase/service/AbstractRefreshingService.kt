@@ -1,4 +1,4 @@
-package io.github.zeyuyangdev.staircasecardgame.service
+package io.github.zeyuyangdev.cardstaircase.service
 
 /**
  * Abstract service class that handles multiples [Refreshable]s (usually UI elements, such as

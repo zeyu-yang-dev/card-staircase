@@ -1,6 +1,6 @@
-package io.github.zeyuyangdev.staircasecardgame.service
+package io.github.zeyuyangdev.cardstaircase.service
 
-import io.github.zeyuyangdev.staircasecardgame.entity.*
+import io.github.zeyuyangdev.cardstaircase.entity.*
 import java.util.Stack
 
 class GameService(private val rootService: RootService): AbstractRefreshingService() {

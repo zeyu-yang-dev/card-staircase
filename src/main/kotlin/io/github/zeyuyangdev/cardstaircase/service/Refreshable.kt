@@ -1,4 +1,4 @@
-package io.github.zeyuyangdev.staircasecardgame.service
+package io.github.zeyuyangdev.cardstaircase.service
 
 /**
  * This interface provides a mechanism for the service layer classes to communicate

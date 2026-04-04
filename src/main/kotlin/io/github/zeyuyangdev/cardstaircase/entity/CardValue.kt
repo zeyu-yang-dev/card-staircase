@@ -1,4 +1,4 @@
-package io.github.zeyuyangdev.staircasecardgame.entity
+package io.github.zeyuyangdev.cardstaircase.entity
 
 /**
  * Enum to distinguish between the 13 possible values in a french-suited card game:

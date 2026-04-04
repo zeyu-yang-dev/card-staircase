@@ -1,5 +1,5 @@
-package io.github.zeyuyangdev.staircasecardgame.service
-import io.github.zeyuyangdev.staircasecardgame.entity.*
+package io.github.zeyuyangdev.cardstaircase.service
+import io.github.zeyuyangdev.cardstaircase.entity.*
 
 class PlayerActionService(private val rootService: RootService): AbstractRefreshingService() {
 

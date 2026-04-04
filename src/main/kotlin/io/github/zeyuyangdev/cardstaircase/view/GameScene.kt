@@ -1,9 +1,9 @@
-package io.github.zeyuyangdev.staircasecardgame.view
+package io.github.zeyuyangdev.cardstaircase.view
 
-import io.github.zeyuyangdev.staircasecardgame.entity.*
-import io.github.zeyuyangdev.staircasecardgame.view.panes.*
-import io.github.zeyuyangdev.staircasecardgame.service.RootService
-import io.github.zeyuyangdev.staircasecardgame.service.Refreshable
+import io.github.zeyuyangdev.cardstaircase.entity.*
+import io.github.zeyuyangdev.cardstaircase.view.panes.*
+import io.github.zeyuyangdev.cardstaircase.service.RootService
+import io.github.zeyuyangdev.cardstaircase.service.Refreshable
 
 import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.visual.ImageVisual
