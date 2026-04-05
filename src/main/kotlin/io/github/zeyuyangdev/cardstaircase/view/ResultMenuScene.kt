@@ -7,24 +7,19 @@ import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.core.MenuScene
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
-
 import tools.aqua.bgw.components.uicomponents.ListView
 import tools.aqua.bgw.components.uicomponents.Orientation
 import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.core.Color
 
 
-const val WINNER_LABLE_WIDTH = 300
-const val WINNER_LABLE_HEIGHT = 600
-const val WINNER_LABEL_POS_X = (1920 - WINNER_LABLE_WIDTH * 2) / 3
-const val WINNER_LABEL_POS_Y = 300
 
-const val VIC_BUTTON_HEIGHT = 100
-const val VIC_BUTTON_POS_Y = (1080 - WINNER_LABLE_HEIGHT - WINNER_LABEL_POS_Y - VIC_BUTTON_HEIGHT) / 2 + WINNER_LABLE_HEIGHT + WINNER_LABEL_POS_Y
-
-const val LOSER_LABEL_POS_X = WINNER_LABEL_POS_X * 2 + WINNER_LABLE_WIDTH
-
-class VictoryScene(private val rootService: RootService) : MenuScene(1920, 1080), Refreshable {
+class VictoryScene(
+    private val rootService: RootService
+) : MenuScene(
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT
+), Refreshable {
 
     private val winnerLabel: ListView<String> = ListView(
         posX = WINNER_LABEL_POS_X,

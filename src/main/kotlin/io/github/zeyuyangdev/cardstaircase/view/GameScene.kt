@@ -1,14 +1,20 @@
 package io.github.zeyuyangdev.cardstaircase.view
 
 import io.github.zeyuyangdev.cardstaircase.entity.*
-import io.github.zeyuyangdev.cardstaircase.view.panes.*
 import io.github.zeyuyangdev.cardstaircase.service.RootService
 import io.github.zeyuyangdev.cardstaircase.service.Refreshable
+import io.github.zeyuyangdev.cardstaircase.view.panes.*
+
 
 import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.visual.ImageVisual
 
-class GameScene(private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
+class GameScene(
+    private val rootService: RootService
+) : BoardGameScene(
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT
+), Refreshable {
 
 
     /**

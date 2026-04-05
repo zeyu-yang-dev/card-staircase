@@ -1,36 +1,27 @@
 package io.github.zeyuyangdev.cardstaircase.view.panes
 
 import io.github.zeyuyangdev.cardstaircase.entity.*
-import io.github.zeyuyangdev.cardstaircase.view.CardImageLoader
-import io.github.zeyuyangdev.cardstaircase.view.GameScene
+import io.github.zeyuyangdev.cardstaircase.service.Refreshable
+import io.github.zeyuyangdev.cardstaircase.service.RootService
+import io.github.zeyuyangdev.cardstaircase.view.*
 import io.github.zeyuyangdev.cardstaircase.view.GameScene.State
 
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.layoutviews.Pane
-import io.github.zeyuyangdev.cardstaircase.service.Refreshable
-import io.github.zeyuyangdev.cardstaircase.service.RootService
 import tools.aqua.bgw.components.gamecomponentviews.CardView
-import tools.aqua.bgw.visual.ColorVisual
-
-
-// Element in this pane
-// offsets for the
-private const val BOTT_LEFT_OFFSET_X = 0
-// Coordinate of the top-left of the card on the bottom-left
-private const val BOTT_LEFT_OFFSET_Y = CARD_HEIGHT * 4 + DIS_BET_CARDS * 4
-
-
-// Pane properties
-const val STAIRS_POS_X = (1920 - CARD_WIDTH * 5 - DIS_BET_CARDS * 4) / 2
-const val STAIRS_POS_Y = 1080 - 30 - CARD_HEIGHT * 5 - DIS_BET_CARDS * 4
-
-const val STAIRS_WIDTH = CARD_WIDTH * 5 + DIS_BET_CARDS * 4
-const val STAIRS_HEIGHT = CARD_HEIGHT
 
 
 
-class PaneStairs(private val rootService: RootService, private val gameScene: GameScene) : Pane<ComponentView>(
-    STAIRS_POS_X, STAIRS_POS_Y, STAIRS_WIDTH, STAIRS_HEIGHT, visual = ColorVisual.TRANSPARENT), Refreshable {
+class PaneStairs(
+    private val rootService: RootService,
+    private val gameScene: GameScene
+) : Pane<ComponentView>(
+    STAIRS_POS_X,
+    STAIRS_POS_Y,
+    STAIRS_WIDTH,
+    STAIRS_HEIGHT,
+    visual = PANE_BG_VISUAL
+), Refreshable {
 
     private val cardImageLoader = CardImageLoader()
 

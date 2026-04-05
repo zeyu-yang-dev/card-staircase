@@ -1,8 +1,7 @@
 package io.github.zeyuyangdev.cardstaircase.view.panes
 
 import io.github.zeyuyangdev.cardstaircase.entity.*
-import io.github.zeyuyangdev.cardstaircase.view.CardImageLoader
-import io.github.zeyuyangdev.cardstaircase.view.GameScene
+import io.github.zeyuyangdev.cardstaircase.view.*
 
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.layoutviews.Pane
@@ -18,23 +17,17 @@ import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 
 
-// Element in this pane
 
-
-
-// Pane properties
-const val STACKS_POS_X = (1920 - CARD_WIDTH * 2 - DIS_BET_CARDS) / 2
-const val STACKS_POS_Y = 30
-
-const val STACKS_WIDTH = CARD_WIDTH * 2 + DIS_BET_CARDS
-const val STACKS_HEIGHT = CARD_HEIGHT
-
-private const val GAME_LOG_POS_Y = (CARD_HEIGHT - BUTTON_HEIGHT) / 2 - STACKS_POS_Y
-
-
-
-class PaneStacks(private val rootService: RootService, private val gameScene: GameScene) : Pane<ComponentView>(
-    STACKS_POS_X, STACKS_POS_Y, STACKS_WIDTH, STACKS_HEIGHT, visual = ColorVisual.TRANSPARENT), Refreshable {
+class PaneStacks(
+    private val rootService: RootService,
+    private val gameScene: GameScene
+) : Pane<ComponentView>(
+    STACKS_POS_X,
+    STACKS_POS_Y,
+    STACKS_WIDTH,
+    STACKS_HEIGHT,
+    visual = PANE_BG_VISUAL
+), Refreshable {
 
     private val cardImageLoader = CardImageLoader()
 
@@ -63,7 +56,7 @@ class PaneStacks(private val rootService: RootService, private val gameScene: Ga
     val stackCardViews = listOf(drawStackView, discardStackView)
 
     val gameLogLabel: Label = Label(
-        posX = BUTTON_POS_X + (POS_X_2 - STACKS_POS_X),
+        posX = BUTTON_POS_X + (PPR_POS_X - STACKS_POS_X),
         posY = GAME_LOG_POS_Y,
         width = BUTTON_WIDTH,
         height = BUTTON_HEIGHT,
@@ -82,7 +75,7 @@ class PaneStacks(private val rootService: RootService, private val gameScene: Ga
 
 
     val gameLogListView: ListView<String> = ListView<String>(
-        posX = PLAYER_LABEL_POS_X + (POS_X_2 - STACKS_POS_X),
+        posX = PLAYER_LABEL_POS_X + (PPR_POS_X - STACKS_POS_X),
         posY = GAME_LOG_POS_Y,
         width = PLAYER_LABEL_WIDTH,
         height = BUTTON_HEIGHT * 6,
