@@ -9,7 +9,12 @@ import io.github.zeyuyangdev.cardstaircase.view.panes.*
 import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.visual.ImageVisual
 
-class GameScene(private val rootService: RootService) : BoardGameScene(1920, 1080), Refreshable {
+class GameScene(
+    private val rootService: RootService
+) : BoardGameScene(
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT
+), Refreshable {
 
 
     /**

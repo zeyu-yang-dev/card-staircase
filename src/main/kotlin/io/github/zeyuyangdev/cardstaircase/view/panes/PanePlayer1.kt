@@ -19,10 +19,6 @@ import tools.aqua.bgw.core.Alignment
 
 
 
-
-
-
-
 class PanePlayer1(
     private val rootService: RootService,
     private val gameScene: GameScene

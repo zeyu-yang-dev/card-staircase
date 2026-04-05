@@ -20,8 +20,6 @@ import tools.aqua.bgw.animation.FlipAnimation
 
 
 
-
-
 class PanePlayer2(
     private val rootService: RootService,
     private val gameScene: GameScene
