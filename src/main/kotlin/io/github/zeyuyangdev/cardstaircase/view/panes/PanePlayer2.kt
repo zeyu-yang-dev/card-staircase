@@ -19,11 +19,19 @@ import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.animation.FlipAnimation
 
 
-// Pane properties
-const val POS_X_2 = POS_X * 3 + CARD_WIDTH * 10 + DIS_BET_CARDS * 8
 
-class PanePlayer2(private val rootService: RootService, private val gameScene: GameScene) : Pane<ComponentView>(
-    POS_X_2, POS_Y, WIDTH, HEIGHT, visual = ColorVisual.TRANSPARENT), Refreshable {
+
+
+class PanePlayer2(
+    private val rootService: RootService,
+    private val gameScene: GameScene
+) : Pane<ComponentView>(
+    PPR_POS_X,
+    PP_POS_Y,
+    PP_WIDTH,
+    PP_HEIGHT,
+    visual = PANE_BG_VISUAL
+), Refreshable {
 
     private val cardImageLoader = CardImageLoader()
     private val playerActionService = rootService.playerActionService

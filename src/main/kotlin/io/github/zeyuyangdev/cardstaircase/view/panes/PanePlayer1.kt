@@ -1,8 +1,7 @@
 package io.github.zeyuyangdev.cardstaircase.view.panes
 
 import io.github.zeyuyangdev.cardstaircase.entity.*
-import io.github.zeyuyangdev.cardstaircase.view.CardImageLoader
-import io.github.zeyuyangdev.cardstaircase.view.GameScene
+import io.github.zeyuyangdev.cardstaircase.view.*
 import io.github.zeyuyangdev.cardstaircase.view.GameScene.State
 import io.github.zeyuyangdev.cardstaircase.service.Refreshable
 import io.github.zeyuyangdev.cardstaircase.service.RootService
@@ -19,40 +18,21 @@ import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
 
 
-// Element in this pane
-const val CARDS_CALE = 0.75
-const val CARD_WIDTH = 130 * CARDS_CALE
-const val CARD_HEIGHT = 200 * CARDS_CALE
-
-
-const val DIS_BET_CARDS = 5
-const val HORIZ_DIS = CARD_WIDTH + DIS_BET_CARDS
-const val VERTIC_DIS = CARD_HEIGHT + DIS_BET_CARDS
-
-const val BUTTON_WIDTH = 200
-const val BUTTON_HEIGHT = BUTTON_WIDTH / 1.618 / 2
-const val BUTTON_POS_X = ((CARD_WIDTH * 5 + DIS_BET_CARDS * 4) - BUTTON_WIDTH) / 2
-const val BUTTON_POS_Y = -(BUTTON_HEIGHT + DIS_BET_CARDS * 3)
-
-const val PLAYER_LABEL_WIDTH = CARD_WIDTH * 3 + DIS_BET_CARDS * 2
-const val PLAYER_LABEL_HEIGHT = CARD_HEIGHT / 4
-const val PLAYER_LABEL_POS_X = CARD_WIDTH + DIS_BET_CARDS
-// LABEL 1 显示分数
-const val PLAYER_LABEL_1_POS_Y = -(BUTTON_HEIGHT + DIS_BET_CARDS * 6 + PLAYER_LABEL_HEIGHT)
-const val PLAYER_LABEL_2_POS_Y = -(BUTTON_HEIGHT + DIS_BET_CARDS * 6 + PLAYER_LABEL_HEIGHT * 2)
 
 
 
-// Pane properties
-const val POS_X = ((1920 - CARD_WIDTH * 5 - DIS_BET_CARDS * 4) / 2 - CARD_WIDTH * 5 - DIS_BET_CARDS * 4) / 2
-const val POS_Y = 900
-const val WIDTH = CARD_WIDTH * 5 + DIS_BET_CARDS * 4
-const val HEIGHT = CARD_HEIGHT
 
 
-
-class PanePlayer1(private val rootService: RootService, private val gameScene: GameScene) : Pane<ComponentView>(
-    POS_X, POS_Y, WIDTH, HEIGHT, visual = ColorVisual.TRANSPARENT), Refreshable {
+class PanePlayer1(
+    private val rootService: RootService,
+    private val gameScene: GameScene
+) : Pane<ComponentView>(
+    PPL_POS_X,
+    PP_POS_Y,
+    PP_WIDTH,
+    PP_HEIGHT,
+    visual = PANE_BG_VISUAL
+), Refreshable {
 
     private val cardImageLoader = CardImageLoader()
     private val playerActionService = rootService.playerActionService
