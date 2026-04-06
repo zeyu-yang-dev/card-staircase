@@ -237,53 +237,50 @@ abstract class PanePlayer(
         addCardViewsForAnimation(true)
 
         val flipAnimationList = mutableListOf<FlipAnimation<CardView>>()
-
         val hand = rootService.currentGame.players[playerOfThisPane].hand
 
-        for (cardView in handCardViews) {cardView.isVisible = false}
-
-        println(handCardViewsForAnimation.size)
-        for (i in handCardViewsForAnimation.indices) {
-            val flipOpenAnimation = FlipAnimation(
-                gameComponentView = handCardViewsForAnimation[i],
-                fromVisual = cardImageLoader.backImage,
-                toVisual = cardImageLoader.frontImageFor(hand[i].suit, hand[i].value),
-                duration = FLIP_ANIMATION_DURATION
-            ).apply {
+        gameScene.playAnimation(
+            DelayAnimation(DELAY_FOR_FLICKER_REMOVAL).apply {
                 onFinished = {
-                    // refreshCardSide()
+                    for (cardView in handCardViews) {cardView.isVisible = false}
+
+                    for (i in handCardViewsForAnimation.indices) {
+                        val flipOpenAnimation = FlipAnimation(
+                            gameComponentView = handCardViewsForAnimation[i],
+                            fromVisual = cardImageLoader.backImage,
+                            toVisual = cardImageLoader.frontImageFor(hand[i].suit, hand[i].value),
+                            duration = FLIP_ANIMATION_DURATION
+                        )
+                        flipAnimationList.add(flipOpenAnimation)
+                    }
+
+
+
+                    val parallelAnimation = ParallelAnimation(flipAnimationList).apply {
+                        onFinished = {
+                            // 关闭CardViewsForAnimation，启动原来的CardViews
+                            for (cardView in handCardViews) {cardView.isVisible = true}
+                            for (cardView in handCardViewsForAnimation) {cardView.isVisible = false}
+                            refreshCardContent()
+                            refreshCardSide()
+                            removeCardViewsForAnimation()
+                            println("FINISHED FLIP OPEN")
+
+
+                        }
+                    }
+
+                    gameScene.playAnimation(parallelAnimation)
                 }
             }
-            flipAnimationList.add(flipOpenAnimation)
-        }
-
-
-
-        val parallelAnimation = ParallelAnimation(flipAnimationList).apply {
-            onFinished = {
-                // 关闭CardViewsForAnimation，启动原来的CardViews
-                    for (cardView in handCardViews) {cardView.isVisible = true}
-                    for (cardView in handCardViewsForAnimation) {cardView.isVisible = false}
-                    refreshCardContent()
-                    refreshCardSide()
-                    removeCardViewsForAnimation()
-                    println("FINISHED FLIP OPEN")
-
-
-            }
-        }
-
-        gameScene.playAnimation(parallelAnimation)
-
-        // for (animation in flipAnimationList) {
-        //     gameScene.playAnimation(animation)
-        // }
+        )
 
 
 
     }
 
     protected fun playFlipCloseAnimation() {
+        // add 4 cardViews for animation
         addCardViewsForAnimation(false)
 
         val flipAnimationList = mutableListOf<FlipAnimation<CardView>>()
@@ -303,44 +300,48 @@ abstract class PanePlayer(
                 showFront()
                 isVisible = true
             }
-
         }
         //------------------------------------------------------------------------------------------------------------------
-        // Hide cardViews for normal gameplay.
-        for (cardView in handCardViews) {cardView.isVisible = false}
 
-        println(hand.size) // It's possible that the player has 5 cards in hand at this point.
-
-        for (i in 0 until 4) {
-
-            val flipOpenAnimation = FlipAnimation(
-                gameComponentView = handCardViewsForAnimation[i],
-                fromVisual = cardImageLoader.frontImageFor(hand[i].suit, hand[i].value),
-                toVisual = cardImageLoader.backImage,
-                duration = FLIP_ANIMATION_DURATION
-            ).apply {
+        gameScene.playAnimation(
+            DelayAnimation(DELAY_FOR_FLICKER_REMOVAL).apply {
                 onFinished = {
+                    // Hide cardViews for normal gameplay.
+                    for (cardView in handCardViews) {cardView.isVisible = false}
+
+                    println(hand.size) // It's possible that the player has 5 cards in hand at this point.
+
+                    for (i in 0 until 4) {
+
+                        val flipCloseAnimation = FlipAnimation(
+                            gameComponentView = handCardViewsForAnimation[i],
+                            fromVisual = cardImageLoader.frontImageFor(hand[i].suit, hand[i].value),
+                            toVisual = cardImageLoader.backImage,
+                            duration = FLIP_ANIMATION_DURATION
+                        )
+                        flipAnimationList.add(flipCloseAnimation)
+                    }
+
+
+
+                    val parallelAnimation = ParallelAnimation(flipAnimationList).apply {
+                        onFinished = {
+                            // 关闭CardViewsForAnimation，启动原来的CardViews
+                            for (cardView in handCardViews) {cardView.isVisible = true}
+                            for (cardView in handCardViewsForAnimation) {cardView.isVisible = false}
+                            refreshCardContent()
+                            refreshCardSide()
+                            removeCardViewsForAnimation()
+                            println("DONE")
+
+                        }
+                    }
+
+                    gameScene.playAnimation(parallelAnimation)
                 }
             }
-            flipAnimationList.add(flipOpenAnimation)
-        }
 
-
-
-        val parallelAnimation = ParallelAnimation(flipAnimationList).apply {
-            onFinished = {
-                // 关闭CardViewsForAnimation，启动原来的CardViews
-                for (cardView in handCardViews) {cardView.isVisible = true}
-                for (cardView in handCardViewsForAnimation) {cardView.isVisible = false}
-                refreshCardContent()
-                refreshCardSide()
-                removeCardViewsForAnimation()
-                println("DONE")
-
-            }
-        }
-
-        gameScene.playAnimation(parallelAnimation)
+        )
 
 
 
