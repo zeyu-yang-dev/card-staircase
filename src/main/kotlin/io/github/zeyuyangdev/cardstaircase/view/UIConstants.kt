@@ -24,7 +24,7 @@ val TEXT_FIELD_VISUAL = ColorVisual(55, 55, 55, 0.5)
 
 // PanePlayer, common properties:
 const val DELAY_FOR_FLICKER_REMOVAL = 200
-const val FLIP_ANIMATION_DURATION = 500
+const val FLIP_ANIMATION_DURATION = 600
 val PANE_BG_VISUAL = ColorVisual(255, 55, 55, 0.3)
 const val CARDS_CALE = 0.75
 const val CARD_WIDTH = 130 * CARDS_CALE
