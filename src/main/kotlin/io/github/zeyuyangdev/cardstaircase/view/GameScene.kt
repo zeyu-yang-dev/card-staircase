@@ -5,7 +5,6 @@ import io.github.zeyuyangdev.cardstaircase.service.RootService
 import io.github.zeyuyangdev.cardstaircase.service.Refreshable
 import io.github.zeyuyangdev.cardstaircase.view.panes.*
 
-
 import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.visual.ImageVisual
 
@@ -20,7 +19,7 @@ class GameScene(
     /**
      * Represents the state of a turn, mainly for UI.
      */
-    enum class State {
+    enum class UIState {
         TURN_READY_START,
         TURN_STARTED,
 
@@ -31,19 +30,19 @@ class GameScene(
         HAS_DISCARDED,
     }
 
-    internal var state = State.TURN_READY_START
+    internal var state = UIState.TURN_READY_START
 
     internal var cardSelected: Card? = null
 
 
-    val panePlayer1 = PanePlayer1(rootService, this).apply {
+    val panePlayerLeft = PanePlayerLeft(rootService, this).apply {
         onMouseEntered = {
             paneStacks.gameLogListView.isVisible = false
             paneStacks.gameLogLabel.isVisible = true
         }
     }
 
-    val panePlayer2 = PanePlayer2(rootService, this).apply {
+    val panePlayerRight = PanePlayerRight(rootService, this).apply {
         onMouseEntered = {
             paneStacks.gameLogListView.isVisible = false
             paneStacks.gameLogLabel.isVisible = true
@@ -60,24 +59,16 @@ class GameScene(
     val paneStacks = PaneStacks(rootService, this)
 
     init {
-
-
         this.background = ImageVisual("game_background.png")
 
-        addComponents(panePlayer1)
-        addComponents(panePlayer2)
+        addComponents(panePlayerLeft)
+        addComponents(panePlayerRight)
         addComponents(paneStairs)
         addComponents(paneStacks)
-
     }
 
     override fun refreshAfterStartNewGame() {
-        state = State.TURN_READY_START
+        state = UIState.TURN_READY_START
         cardSelected = null
     }
-
-
-
-
-
 }
