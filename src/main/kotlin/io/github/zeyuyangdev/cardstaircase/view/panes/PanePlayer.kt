@@ -14,6 +14,8 @@ import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
+import tools.aqua.bgw.animation.DelayAnimation
+import tools.aqua.bgw.animation.ParallelAnimation
 
 /**
  * Abstract base class for all player panes.
@@ -97,8 +99,9 @@ abstract class PanePlayer(
             if (gameScene.state in setOf(UIState.HAS_DISCARDED, UIState.HAS_PLAYED)) {
                 cardsRevealed = false
                 gameScene.state = UIState.TURN_READY_START
-                playerActionService.endTurn()
+
                 playFlipCloseAnimation()
+                playerActionService.endTurn() // draw card
             }
 
             // 3. After the player has selected a card from hand:
@@ -117,12 +120,7 @@ abstract class PanePlayer(
             handCardViews.add(createCardView(i))
         }
 
-        for (i in 0 until 5) {
-            handCardViewsForAnimation.add(createCardView(i))
-            handCardViewsForAnimation[i].apply {
-                isVisible = false
-            }
-        }
+
 
         // 定义每一个CardView的按钮行为
         for (i in handCardViews.indices) {
@@ -143,7 +141,7 @@ abstract class PanePlayer(
         addAll(handCardViews)
         addAll(button)
         addAll(playerLabel1, playerLabel2)
-        addAll(handCardViewsForAnimation)
+
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -236,21 +234,21 @@ abstract class PanePlayer(
 
     //------------------------------------------------------------------------------------------------------------------
     protected fun playFlipOpenAnimation() {
+        addCardViewsForAnimation(true)
 
         val flipAnimationList = mutableListOf<FlipAnimation<CardView>>()
 
         val hand = rootService.currentGame.players[playerOfThisPane].hand
 
-        // 关闭原来的CardViews，启动CardViewsForAnimation
-        for (cardView in handCardViewsForAnimation) {cardView.isVisible = true}
         for (cardView in handCardViews) {cardView.isVisible = false}
 
+        println(handCardViewsForAnimation.size)
         for (i in handCardViewsForAnimation.indices) {
             val flipOpenAnimation = FlipAnimation(
                 gameComponentView = handCardViewsForAnimation[i],
                 fromVisual = cardImageLoader.backImage,
                 toVisual = cardImageLoader.frontImageFor(hand[i].suit, hand[i].value),
-                duration = 500
+                duration = FLIP_ANIMATION_DURATION
             ).apply {
                 onFinished = {
                     // refreshCardSide()
@@ -259,72 +257,123 @@ abstract class PanePlayer(
             flipAnimationList.add(flipOpenAnimation)
         }
 
-        var animationsFinished = 0
-        for (animation in flipAnimationList) {
-            animation.onFinished = {
-                animationsFinished++
-                if (animationsFinished == flipAnimationList.size) {
-                    // 关闭CardViewsForAnimation，启动原来的CardViews
+
+
+        val parallelAnimation = ParallelAnimation(flipAnimationList).apply {
+            onFinished = {
+                // 关闭CardViewsForAnimation，启动原来的CardViews
                     for (cardView in handCardViews) {cardView.isVisible = true}
                     for (cardView in handCardViewsForAnimation) {cardView.isVisible = false}
                     refreshCardContent()
                     refreshCardSide()
+                    removeCardViewsForAnimation()
+                    println("FINISHED FLIP OPEN")
 
 
-                }
             }
         }
 
-        for (animation in flipAnimationList) {
-            gameScene.playAnimation(animation)
-        }
+        gameScene.playAnimation(parallelAnimation)
+
+        // for (animation in flipAnimationList) {
+        //     gameScene.playAnimation(animation)
+        // }
+
+
+
     }
 
     protected fun playFlipCloseAnimation() {
+        addCardViewsForAnimation(false)
 
         val flipAnimationList = mutableListOf<FlipAnimation<CardView>>()
 
         val hand = rootService.currentGame.players[playerOfThisPane].hand
+        println(hand.size)
 
-        // 关闭原来的CardViews，启动CardViewsForAnimation
-        for (cardView in handCardViewsForAnimation) {cardView.isVisible = true}
-        for (cardView in handCardViews) {cardView.isVisible = false}
-        handCardViewsForAnimation[4].isVisible = false // 让第5张卡在翻转完成后再显示
-
+        //------------------------------------------------------------------------------------------------------------------
+        // DOESN'T WORK AFTER THE CARDVIEWS HAVE PLAYED FLIP OPEN ANIMATION!
+        // Make cardViews for animation visible.
+        // Before they are made visible, they must show the correct card front,
+        // otherwise there will be flicker before the flip close animation.
+        // (At the end of the turn, the player only has 4 cards)
         for (i in handCardViewsForAnimation.indices) {
+            handCardViewsForAnimation[i].apply {
+                frontVisual = cardImageLoader.frontImageFor(hand[i].suit, hand[i].value)
+                showFront()
+                isVisible = true
+            }
+
+        }
+        //------------------------------------------------------------------------------------------------------------------
+        // Hide cardViews for normal gameplay.
+        for (cardView in handCardViews) {cardView.isVisible = false}
+
+        println(hand.size) // It's possible that the player has 5 cards in hand at this point.
+
+        for (i in 0 until 4) {
+
             val flipOpenAnimation = FlipAnimation(
                 gameComponentView = handCardViewsForAnimation[i],
                 fromVisual = cardImageLoader.frontImageFor(hand[i].suit, hand[i].value),
                 toVisual = cardImageLoader.backImage,
-                duration = 500
+                duration = FLIP_ANIMATION_DURATION
             ).apply {
                 onFinished = {
-                    // refreshCardSide()
                 }
             }
             flipAnimationList.add(flipOpenAnimation)
         }
 
-        var animationsFinished = 0
-        for (animation in flipAnimationList) {
-            animation.onFinished = {
-                animationsFinished++
-                if (animationsFinished == flipAnimationList.size) {
-                    // 关闭CardViewsForAnimation，启动原来的CardViews
-                    for (cardView in handCardViews) {cardView.isVisible = true}
-                    for (cardView in handCardViewsForAnimation) {cardView.isVisible = false}
-                    refreshCardContent()
-                    refreshCardSide()
 
-                }
+
+        val parallelAnimation = ParallelAnimation(flipAnimationList).apply {
+            onFinished = {
+                // 关闭CardViewsForAnimation，启动原来的CardViews
+                for (cardView in handCardViews) {cardView.isVisible = true}
+                for (cardView in handCardViewsForAnimation) {cardView.isVisible = false}
+                refreshCardContent()
+                refreshCardSide()
+                removeCardViewsForAnimation()
+                println("DONE")
+
             }
         }
 
-        for (animation in flipAnimationList) {
-            gameScene.playAnimation(animation)
-        }
+        gameScene.playAnimation(parallelAnimation)
+
+
+
+
+
+
 
     }
+
+    protected fun addCardViewsForAnimation(forFlipOpen: Boolean) {
+        val amount = if (forFlipOpen) 5 else 4
+        for (i in 0 until amount) {
+            handCardViewsForAnimation.add(createCardView(i))
+            handCardViewsForAnimation[i].apply {
+                if(forFlipOpen) {
+                    isVisible = true
+                    showBack()
+                } else {
+                    isVisible = false
+                }
+
+            }
+        }
+        addAll(handCardViewsForAnimation)
+    }
+
+    protected fun removeCardViewsForAnimation() {
+
+        removeAll(handCardViewsForAnimation)
+        handCardViewsForAnimation.clear()
+    }
+
+
 
     //------------------------------------------------------------------------------------------------------------------
     override fun refreshAfterStartNewGame() {
@@ -369,6 +418,8 @@ abstract class PanePlayer(
         // refreshCardSide()
         refreshButton()
         refreshPlayerLable()
+
+
     }
 
     override fun refreshAfterEndGame() {
