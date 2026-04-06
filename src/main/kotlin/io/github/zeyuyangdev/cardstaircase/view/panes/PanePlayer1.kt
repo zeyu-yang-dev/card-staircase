@@ -2,7 +2,7 @@ package io.github.zeyuyangdev.cardstaircase.view.panes
 
 import io.github.zeyuyangdev.cardstaircase.entity.*
 import io.github.zeyuyangdev.cardstaircase.view.*
-import io.github.zeyuyangdev.cardstaircase.view.GameScene.State
+import io.github.zeyuyangdev.cardstaircase.view.GameScene.UIState
 import io.github.zeyuyangdev.cardstaircase.service.Refreshable
 import io.github.zeyuyangdev.cardstaircase.service.RootService
 
@@ -100,9 +100,9 @@ class PanePlayer1(
     ).apply {
         onMouseClicked = {
             // 当回合准备开始时
-            if (gameScene.state == State.TURN_READY_START) {
+            if (gameScene.state == UIState.TURN_READY_START) {
                 cardsRevealed = true
-                gameScene.state = State.TURN_STARTED
+                gameScene.state = UIState.TURN_STARTED
                 playerActionService.startTurn()
                 this.isVisible = false
                 gameScene.cardSelected = null
@@ -112,20 +112,20 @@ class PanePlayer1(
 
             // 当已经打出一张牌或已经弃掉一张牌后
             // 不能把这一段放在下一段后面，否则这一段的点击会自动触发
-            if (gameScene.state in setOf(State.HAS_DISCARDED, State.HAS_PLAYED)) {
+            if (gameScene.state in setOf(UIState.HAS_DISCARDED, UIState.HAS_PLAYED)) {
 
                 // 牌序很重要，需要先确定是否揭示再刷新
                 cardsRevealed = false // 测试
-                gameScene.state = State.TURN_READY_START
+                gameScene.state = UIState.TURN_READY_START
                 playerActionService.endTurn()
 
                 playFlipCloseAnimation()
             }
 
             // 当已经选择了一张卡牌时
-            if (gameScene.state == State.HAS_SELECTED) {
+            if (gameScene.state == UIState.HAS_SELECTED) {
 
-                gameScene.state = State.HAS_DISCARDED
+                gameScene.state = UIState.HAS_DISCARDED
                 playerActionService.discardCard(gameScene.cardSelected!!)
                 gameScene.cardSelected = null
             }
@@ -140,14 +140,14 @@ class PanePlayer1(
     // 刷新按钮的外观
     private fun refreshButton() {
 
-        if (gameScene.state == State.TURN_READY_START) {
+        if (gameScene.state == UIState.TURN_READY_START) {
             button.visual = ColorVisual(55, 55, 55, 0.5)
             button.text = "START TURN"
             button.isVisible = true
         }
 
 
-        if (gameScene.state == State.HAS_SELECTED) {
+        if (gameScene.state == UIState.HAS_SELECTED) {
             button.visual = ColorVisual(255, 55, 55, 0.5)
             button.text = "DISCARD"
             button.isVisible = true
@@ -155,7 +155,7 @@ class PanePlayer1(
         }
 
         // 目前只在打出牌后会显示这个状态，弃牌后不会
-        if (gameScene.state in setOf(State.HAS_DISCARDED, State.HAS_PLAYED)) {
+        if (gameScene.state in setOf(UIState.HAS_DISCARDED, UIState.HAS_PLAYED)) {
             button.visual = ColorVisual(55, 55, 55, 0.5)
             button.text = "END TURN"
             button.isVisible = true
@@ -342,10 +342,10 @@ class PanePlayer1(
             handCardViews[i].apply {
                 onMouseClicked = {
 
-                    if (gameScene.state in setOf(State.TURN_STARTED, State.HAS_DESTROYED, State.HAS_SELECTED)) {
+                    if (gameScene.state in setOf(UIState.TURN_STARTED, UIState.HAS_DESTROYED, UIState.HAS_SELECTED)) {
                         val handCards = rootService.currentGame.players[playerOfThisPane].hand
                         gameScene.cardSelected = handCards[i]
-                        gameScene.state = State.HAS_SELECTED
+                        gameScene.state = UIState.HAS_SELECTED
                     }
                     refreshButton()
 

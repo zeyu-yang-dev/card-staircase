@@ -4,7 +4,7 @@ import io.github.zeyuyangdev.cardstaircase.entity.*
 import io.github.zeyuyangdev.cardstaircase.service.Refreshable
 import io.github.zeyuyangdev.cardstaircase.service.RootService
 import io.github.zeyuyangdev.cardstaircase.view.*
-import io.github.zeyuyangdev.cardstaircase.view.GameScene.State
+import io.github.zeyuyangdev.cardstaircase.view.GameScene.UIState
 
 import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.layoutviews.Pane
@@ -152,20 +152,20 @@ class PaneStairs(
                             val currentPlayer = rootService.currentGame.players[currentPlayerIndex]
 
                             // DESTROY
-                            if (gameScene.state == State.TURN_STARTED && currentPlayer.score >= 5) {
+                            if (gameScene.state == UIState.TURN_STARTED && currentPlayer.score >= 5) {
                                 val stairs = rootService.currentGame.stairs
                                 playerActionService.destroyCard(stairs[col][row])
-                                gameScene.state = State.HAS_DESTROYED
+                                gameScene.state = UIState.HAS_DESTROYED
                             }
 
                             // 当已经选择了一张手牌
-                            if (gameScene.state == State.HAS_SELECTED) {
+                            if (gameScene.state == UIState.HAS_SELECTED) {
                                 // 检查从手牌中选择的牌和阶梯中选择的牌是否匹配
                                 val stairs = rootService.currentGame.stairs
                                 if (gameScene.cardSelected!!.value == stairs[col][row].value || gameScene.cardSelected!!.suit == stairs[col][row].suit) {
 
                                     // 牌序很重要，需要先改state再刷新
-                                    gameScene.state = State.HAS_PLAYED
+                                    gameScene.state = UIState.HAS_PLAYED
                                     playerActionService.playCard(gameScene.cardSelected!!, stairs[col][row])
 
                                     gameScene.cardSelected = null

@@ -20,7 +20,7 @@ class GameScene(
     /**
      * Represents the state of a turn, mainly for UI.
      */
-    enum class State {
+    enum class UIState {
         TURN_READY_START,
         TURN_STARTED,
 
@@ -31,7 +31,7 @@ class GameScene(
         HAS_DISCARDED,
     }
 
-    internal var state = State.TURN_READY_START
+    internal var state = UIState.TURN_READY_START
 
     internal var cardSelected: Card? = null
 
@@ -72,7 +72,7 @@ class GameScene(
     }
 
     override fun refreshAfterStartNewGame() {
-        state = State.TURN_READY_START
+        state = UIState.TURN_READY_START
         cardSelected = null
     }
 

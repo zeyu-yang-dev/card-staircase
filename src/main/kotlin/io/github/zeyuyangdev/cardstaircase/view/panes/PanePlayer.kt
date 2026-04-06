@@ -3,48 +3,155 @@ package io.github.zeyuyangdev.cardstaircase.view.panes
 import io.github.zeyuyangdev.cardstaircase.entity.*
 import io.github.zeyuyangdev.cardstaircase.view.*
 import io.github.zeyuyangdev.cardstaircase.view.GameScene.UIState
-
-import tools.aqua.bgw.components.ComponentView
-import tools.aqua.bgw.components.layoutviews.Pane
 import io.github.zeyuyangdev.cardstaircase.service.Refreshable
 import io.github.zeyuyangdev.cardstaircase.service.RootService
 
+import tools.aqua.bgw.components.ComponentView
+import tools.aqua.bgw.components.layoutviews.Pane
+import tools.aqua.bgw.animation.FlipAnimation
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.components.uicomponents.Button
-import tools.aqua.bgw.util.Font
-import tools.aqua.bgw.core.Color
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
-import tools.aqua.bgw.animation.FlipAnimation
 
-
-
-class PanePlayer2(
-    private val rootService: RootService,
-    private val gameScene: GameScene
+/**
+ * Abstract base class for all player panes.
+ */
+abstract class PanePlayer(
+    protected val rootService: RootService,
+    protected val gameScene: GameScene,
+    protected val playerOfThisPane: Int, // O for left, 1 for right
+    posX: Number,
+    posY: Number,
+    width: Number,
+    height: Number
 ) : Pane<ComponentView>(
-    PPR_POS_X,
-    PP_POS_Y,
-    PP_WIDTH,
-    PP_HEIGHT,
+    posX,
+    posY,
+    width,
+    height,
     visual = PANE_BG_VISUAL
 ), Refreshable {
 
-    private val cardImageLoader = CardImageLoader()
-    private val playerActionService = rootService.playerActionService
+    protected val cardImageLoader = CardImageLoader()
+    protected val playerActionService = rootService.playerActionService
 
-    private var cardsRevealed: Boolean = false
-    private val playerOfThisPane: Int = 1
+    protected var cardsRevealed: Boolean = false
 
-    val handCardViews: MutableList<CardView> = mutableListOf()
-    val handCardViewsForAnimation: MutableList<CardView> = mutableListOf()
+    protected val handCardViews: MutableList<CardView> = mutableListOf()
+    protected val handCardViewsForAnimation: MutableList<CardView> = mutableListOf()
 
     /**
-     * Creates a Cardview for this pane.
+     * Displays the score of the player of this pane.
+     */
+    protected val playerLabel1: Label = Label(
+        posX = PLAYER_LABEL_POS_X,
+        posY = PLAYER_LABEL_1_POS_Y,
+        width = PLAYER_LABEL_WIDTH,
+        height = PLAYER_LABEL_HEIGHT,
+        font = PLAYER_LABEL_FONT,
+        alignment = Alignment.CENTER,
+        visual = PLAYER_LABEL_VISUAL,
+    )
+
+    /**
+     * Displays the name of the player of this pane.
+     */
+    protected val playerLabel2: Label = Label(
+        posX = PLAYER_LABEL_POS_X,
+        posY = PLAYER_LABEL_2_POS_Y,
+        width = PLAYER_LABEL_WIDTH,
+        height = PLAYER_LABEL_HEIGHT,
+        font = PLAYER_LABEL_FONT,
+        alignment = Alignment.CENTER,
+        visual = PLAYER_LABEL_VISUAL,
+    )
+
+    /**
+     * The only button used by the player.
+     */
+    protected val button = Button(
+        width = BUTTON_WIDTH,
+        height = BUTTON_HEIGHT,
+        posX = BUTTON_POS_X,
+        posY = BUTTON_POS_Y,
+        text = "START TURN",
+        font = BUTTON_FONT,
+        visual = BUTTON_DEFAULT_VISUAL
+    ).apply {
+        onMouseClicked = {
+            // 1. When player's turn is ready to start:
+            if (gameScene.state == UIState.TURN_READY_START) {
+                cardsRevealed = true
+                gameScene.state = UIState.TURN_STARTED
+                playerActionService.startTurn()
+                this.isVisible = false
+                gameScene.cardSelected = null
+                playFlipOpenAnimation()
+            }
+
+            // 2. After a card is matched or discarded:
+            // Condition 2 must be placed before condition 3,
+            // otherwise 2 will be automatically fulfilled.
+            if (gameScene.state in setOf(UIState.HAS_DISCARDED, UIState.HAS_PLAYED)) {
+                cardsRevealed = false
+                gameScene.state = UIState.TURN_READY_START
+                playerActionService.endTurn()
+                playFlipCloseAnimation()
+            }
+
+            // 3. After the player has selected a card from hand:
+            if (gameScene.state == UIState.HAS_SELECTED) {
+                gameScene.state = UIState.HAS_DISCARDED
+                playerActionService.discardCard(gameScene.cardSelected!!)
+                gameScene.cardSelected = null
+            }
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    init {
+
+        for (i in 0 until 5) {
+            handCardViews.add(createCardView(i))
+        }
+
+        for (i in 0 until 5) {
+            handCardViewsForAnimation.add(createCardView(i))
+            handCardViewsForAnimation[i].apply {
+                isVisible = false
+            }
+        }
+
+        // 定义每一个CardView的按钮行为
+        for (i in handCardViews.indices) {
+            handCardViews[i].apply {
+                onMouseClicked = {
+
+                    if (gameScene.state in setOf(UIState.TURN_STARTED, UIState.HAS_DESTROYED, UIState.HAS_SELECTED)) {
+                        val handCards = rootService.currentGame.players[playerOfThisPane].hand
+                        gameScene.cardSelected = handCards[i]
+                        gameScene.state = UIState.HAS_SELECTED
+                    }
+                    refreshButton()
+
+                }
+            }
+        }
+
+        addAll(handCardViews)
+        addAll(button)
+        addAll(playerLabel1, playerLabel2)
+        addAll(handCardViewsForAnimation)
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Creates a cardView for this pane.
      * @param index Index of the CardView in hand.
      */
-    private fun createCardView(index: Int): CardView {
+    protected fun createCardView(index: Int): CardView {
         val cardView = CardView(
             posX = HORIZ_DIS * index,
             posY = 0,
@@ -52,101 +159,22 @@ class PanePlayer2(
             height = CARD_HEIGHT,
             front = cardImageLoader.frontImageFor(CardSuit.HEARTS, CardValue.ACE),
             back = cardImageLoader.backImage,
-        ).apply {
-            // this.showFront()
-        }
+        )
         return cardView
     }
 
 
 
-
-
-    private val playerLabel1: Label = Label(
-        posX = PLAYER_LABEL_POS_X,
-        posY = PLAYER_LABEL_1_POS_Y,
-        width = PLAYER_LABEL_WIDTH,
-        height = PLAYER_LABEL_HEIGHT,
-        text = "",
-        font = Font(size = 20, color = Color.WHITE,
-            fontWeight = Font.FontWeight.SEMI_BOLD, fontStyle = Font.FontStyle.NORMAL),
-        alignment = Alignment.CENTER,
-        visual = ColorVisual(55, 55, 55, 0.5),
-    )
-
-    private val playerLabel2: Label = Label(
-        posX = PLAYER_LABEL_POS_X,
-        posY = PLAYER_LABEL_2_POS_Y,
-        width = PLAYER_LABEL_WIDTH,
-        height = PLAYER_LABEL_HEIGHT,
-        text = "",
-        font = Font(size = 20, color = Color.WHITE,
-            fontWeight = Font.FontWeight.SEMI_BOLD, fontStyle = Font.FontStyle.NORMAL),
-        alignment = Alignment.CENTER,
-        visual = ColorVisual(55, 55, 55, 0.5),
-    )
-
-
-
-
-
-    val button = Button(
-        width = BUTTON_WIDTH,
-        height = BUTTON_HEIGHT,
-        posX = BUTTON_POS_X,
-        posY = BUTTON_POS_Y,
-        text = "START TURN",
-        font = Font(size = 24, color = Color.WHITE,
-            fontWeight = Font.FontWeight.SEMI_BOLD, fontStyle = Font.FontStyle.ITALIC),
-        visual = ColorVisual(55, 55, 55, 0.5)
-    ).apply {
-        onMouseClicked = {
-            // 当回合准备开始时
-            if (gameScene.state == UIState.TURN_READY_START) {
-                cardsRevealed = true
-                gameScene.state = UIState.TURN_STARTED
-                playerActionService.startTurn()
-                this.isVisible = false
-                gameScene.cardSelected = null
-
-                playFlipOpenAnimation()
-            }
-
-            // 当已经打出一张牌或已经弃掉一张牌后
-            // 不能把这一段放在下一段后面，否则这一段的点击会自动触发
-            if (gameScene.state in setOf(UIState.HAS_DISCARDED, UIState.HAS_PLAYED)) {
-
-                // 牌序很重要，需要先确定是否揭示再刷新
-                cardsRevealed = false // 测试
-                gameScene.state = UIState.TURN_READY_START
-                playerActionService.endTurn()
-
-                playFlipCloseAnimation()
-            }
-
-            // 当已经选择了一张卡牌时
-            if (gameScene.state == UIState.HAS_SELECTED) {
-                gameScene.state = UIState.HAS_DISCARDED
-                playerActionService.discardCard(gameScene.cardSelected!!)
-                gameScene.cardSelected = null
-            }
-
-
-
-
-        }
-    }
-
-
-    // 刷新按钮的外观
-    private fun refreshButton() {
+    /**
+     * Refreshes the visual of the button.
+     */
+    protected fun refreshButton() {
 
         if (gameScene.state == UIState.TURN_READY_START) {
-            button.visual = ColorVisual(55, 55, 55, 0.5)
+            button.visual = BUTTON_DEFAULT_VISUAL
             button.text = "START TURN"
             button.isVisible = true
         }
-
 
         if (gameScene.state == UIState.HAS_SELECTED) {
             button.visual = ColorVisual(255, 55, 55, 0.5)
@@ -156,21 +184,20 @@ class PanePlayer2(
         }
 
         if (gameScene.state in setOf(UIState.HAS_DISCARDED, UIState.HAS_PLAYED)) {
-            button.visual = ColorVisual(55, 55, 55, 0.5)
+            button.visual = BUTTON_DEFAULT_VISUAL
             button.text = "END TURN"
             button.isVisible = true
         }
-
-
-
 
         if (rootService.currentGame.currentPlayer != playerOfThisPane) {
             button.isVisible = false
         }
     }
 
-    // 刷新玩家名和分数显示
-    private fun refreshPlayerLable() {
+    /**
+     * Refreshes labels displaying player's score and name.
+     */
+    protected fun refreshPlayerLable() {
         val currentPlayer = rootService.currentGame.players[playerOfThisPane]
         val playerName = currentPlayer.name
         val playerScore = currentPlayer.score.toString()
@@ -178,39 +205,37 @@ class PanePlayer2(
         playerLabel2.text = "PLAYER: $playerName"
     }
 
-
-
-
-
-    // 刷新 卡牌内容 + CardView可见性
-    private fun refreshCardContent() {
+    /**
+     * Refreshes the front visual for each cardView,
+     * if the player only has 4 hand cards, hide the 5th cardView.
+     */
+    protected fun refreshCardContent() {
 
         val numOfCards = rootService.currentGame.players[playerOfThisPane].hand.size
         val handCards = rootService.currentGame.players[playerOfThisPane].hand
 
         for (i in 0 until numOfCards) {
             handCardViews[i].apply {
-                handCards[i].let { handCard ->
-                    this.frontVisual = cardImageLoader.frontImageFor(handCard.suit, handCard.value)
-                    this.isVisible = true
-                }
+                val card = handCards[i]
+                frontVisual = cardImageLoader.frontImageFor(card.suit, card.value)
             }
         }
 
-        // 如果实际只有4张手牌，第5个CardView不可见
-        for (i in numOfCards until 5) {
-            handCardViews[i].isVisible = false
-        }
+        // The 5th cardView is only visible, when the player has 5 hand cards.
+        handCardViews[4].isVisible = (numOfCards == 5)
     }
 
-    // 刷新卡牌是否翻开
-    private fun refreshCardSide() {
+    /**
+     * Refreshes the card side of all cardViews based on cardsRevealed.
+     */
+    protected fun refreshCardSide() {
         for (cardView in handCardViews) {
             if (cardsRevealed) cardView.showFront() else cardView.showBack()
         }
     }
 
-    private fun playFlipOpenAnimation() {
+    //------------------------------------------------------------------------------------------------------------------
+    protected fun playFlipOpenAnimation() {
 
         val flipAnimationList = mutableListOf<FlipAnimation<CardView>>()
 
@@ -219,7 +244,6 @@ class PanePlayer2(
         // 关闭原来的CardViews，启动CardViewsForAnimation
         for (cardView in handCardViewsForAnimation) {cardView.isVisible = true}
         for (cardView in handCardViews) {cardView.isVisible = false}
-
 
         for (i in handCardViewsForAnimation.indices) {
             val flipOpenAnimation = FlipAnimation(
@@ -246,6 +270,7 @@ class PanePlayer2(
                     refreshCardContent()
                     refreshCardSide()
 
+
                 }
             }
         }
@@ -253,16 +278,9 @@ class PanePlayer2(
         for (animation in flipAnimationList) {
             gameScene.playAnimation(animation)
         }
-
-
-
     }
 
-
-
-
-
-    private fun playFlipCloseAnimation() {
+    protected fun playFlipCloseAnimation() {
 
         val flipAnimationList = mutableListOf<FlipAnimation<CardView>>()
 
@@ -308,64 +326,13 @@ class PanePlayer2(
 
     }
 
-
-
-
-
-
-
-
-
-    init {
-
-        for (i in 0 until 5) {
-            handCardViews.add(createCardView(i))
-        }
-
-        for (i in 0 until 5) {
-            handCardViewsForAnimation.add(createCardView(i))
-            handCardViewsForAnimation[i].apply {
-                isVisible = false
-            }
-        }
-
-        // 定义每一个CardView的按钮行为
-        for (i in handCardViews.indices) {
-            handCardViews[i].apply {
-                onMouseClicked = {
-
-                    if (gameScene.state in setOf(UIState.TURN_STARTED, UIState.HAS_DESTROYED, UIState.HAS_SELECTED)) {
-                        val handCards = rootService.currentGame.players[playerOfThisPane].hand
-                        gameScene.cardSelected = handCards[i]
-                        gameScene.state = UIState.HAS_SELECTED
-                    }
-                    refreshButton()
-
-                }
-            }
-        }
-
-
-
-
-
-        addAll(handCardViews)
-        addAll(button)
-        addAll(playerLabel1, playerLabel2)
-        addAll(handCardViewsForAnimation)
-
-
-
-    }
-
-
+    //------------------------------------------------------------------------------------------------------------------
     override fun refreshAfterStartNewGame() {
         cardsRevealed = false
         refreshCardContent()
         refreshCardSide()
         refreshButton()
         refreshPlayerLable()
-
 
     }
 
@@ -374,7 +341,6 @@ class PanePlayer2(
         // refreshCardSide()
         refreshButton()
         refreshPlayerLable()
-
     }
 
     override fun refreshAfterDestroyCard() {
@@ -382,7 +348,6 @@ class PanePlayer2(
         refreshCardSide()
         refreshButton()
         refreshPlayerLable()
-
     }
 
     override fun refreshAfterPlayCard() {
@@ -390,7 +355,6 @@ class PanePlayer2(
         refreshCardSide()
         refreshButton()
         refreshPlayerLable()
-
     }
 
     override fun refreshAfterDiscardCard() {
@@ -398,7 +362,6 @@ class PanePlayer2(
         refreshCardSide()
         refreshButton()
         refreshPlayerLable()
-
     }
 
     override fun refreshAfterEndTurn() {
@@ -406,7 +369,6 @@ class PanePlayer2(
         // refreshCardSide()
         refreshButton()
         refreshPlayerLable()
-
     }
 
     override fun refreshAfterEndGame() {
@@ -414,6 +376,6 @@ class PanePlayer2(
         refreshCardSide()
         refreshButton()
         refreshPlayerLable()
-
     }
+
 }
