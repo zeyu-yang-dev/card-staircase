@@ -23,7 +23,7 @@ val MMS_TEXT_FONT = Font(
 val TEXT_FIELD_VISUAL = ColorVisual(55, 55, 55, 0.5)
 
 // PanePlayer, common properties:
-val PANE_BG_VISUAL = ColorVisual(255, 55, 55, 0.5)
+val PANE_BG_VISUAL = ColorVisual(255, 55, 55, 0.3)
 const val CARDS_CALE = 0.75
 const val CARD_WIDTH = 130 * CARDS_CALE
 const val CARD_HEIGHT = 200 * CARDS_CALE
@@ -70,7 +70,7 @@ const val PPR_POS_X = PPL_POS_X * 3 + CARD_WIDTH * 10 + DIS_BET_CARDS * 8
 
 // PaneStairs:
 const val STAIRS_WIDTH = CARD_WIDTH * 5 + DIS_BET_CARDS * 4
-const val STAIRS_HEIGHT = CARD_HEIGHT
+const val STAIRS_HEIGHT = CARD_HEIGHT * 5 + DIS_BET_CARDS * 4
 const val STAIRS_POS_X = (SCREEN_WIDTH - CARD_WIDTH * 5 - DIS_BET_CARDS * 4) / 2
 const val STAIRS_POS_Y = SCREEN_HEIGHT - DIS_TO_BOTTOM - CARD_HEIGHT * 5 - DIS_BET_CARDS * 4
 // Relative coordinate of the top-left of the card on the bottom-left

@@ -18,7 +18,6 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
      */
     val rootService: RootService = RootService()
 
-
     /**
      * The main game scene displayed in the application.
      */
@@ -55,10 +54,6 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
         }
     }
 
-
-
-
-
     init {
 
         rootService.addRefreshables(
@@ -66,8 +61,8 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
             gameScene,
             gameScene.paneStairs,
             gameScene.paneStacks,
-            gameScene.panePlayer1,
-            gameScene.panePlayer2,
+            gameScene.panePlayerLeft,
+            gameScene.panePlayerRight,
             victoryScene,
             mainMenuScene
         )
@@ -76,12 +71,10 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
         this.showMenuScene(mainMenuScene)
     }
 
-
     override fun refreshAfterStartNewGame() {
         this.hideMenuScene()
         this.showGameScene(gameScene)
     }
-
 
     override fun refreshAfterEndGame() {
         this.showMenuScene(victoryScene)
