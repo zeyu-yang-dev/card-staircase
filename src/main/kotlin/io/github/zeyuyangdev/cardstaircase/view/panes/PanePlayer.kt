@@ -90,7 +90,7 @@ abstract class PanePlayer(
                 playerActionService.startTurn()
                 this.isVisible = false
                 gameScene.cardSelected = null
-                playFlipOpenAnimation()
+                playFlipAnimation(true)
             }
 
             // 2. After a card is matched or discarded:
@@ -100,9 +100,7 @@ abstract class PanePlayer(
                 this.isVisible = false
                 cardsRevealed = false
                 gameScene.state = UIState.TURN_READY_START
-
-                playFlipCloseAnimation()
-                // playerActionService.endTurn() // draw card
+                playFlipAnimation(false)
             }
 
             // 3. After the player has selected a card from hand:
@@ -234,172 +232,108 @@ abstract class PanePlayer(
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    protected fun playFlipOpenAnimation() {
-        val flipAnimationList = mutableListOf<FlipAnimation<CardView>>()
-        val hand = rootService.currentGame.players[playerOfThisPane].hand
 
-        // 1. show cardViews for animation
-        addCardViewsForAnimation(true)
+    protected fun playFlipAnimation(flipOpen: Boolean) {
 
-        // 2. delay animation before flip-open animation to avoid briefly empty deck
+        // show cardViews for animation
+        addCardViewsForAnimation(flipOpen)
+
+        // delay animation before flip-open animation to avoid briefly empty deck
         gameScene.playAnimation(
             DelayAnimation(DELAY_FOR_FLICKER_REMOVAL).apply {
                 onFinished = {
-                    // 3. hide cardViews for normal gameplay
+                    // hide cardViews for normal gameplay
                     for (cardView in handCardViews) {cardView.isVisible = false}
 
-                    for (i in handCardViewsForAnimation.indices) {
-                        val flipOpenAnimation = FlipAnimation(
-                            gameComponentView = handCardViewsForAnimation[i],
-                            fromVisual = cardImageLoader.backImage,
-                            toVisual = cardImageLoader.frontImageFor(hand[i].suit, hand[i].value),
-                            duration = FLIP_ANIMATION_DURATION
-                        )
-                        flipAnimationList.add(flipOpenAnimation)
-                    }
-
-                    val parallelAnimation = ParallelAnimation(flipAnimationList).apply {
-                        onFinished = {
-                            // 4. show cardViews for normal gameplay
-                            refreshCardContent()
-                            refreshCardSide()
-                            for (cardView in handCardViews) {cardView.isVisible = true}
-                            for (cardView in handCardViews) {cardView.toFront()}
-
-                            // 5. delay animation after flip-open animation to avoid briefly empty deck
-                            gameScene.playAnimation(
-                                DelayAnimation(DELAY_FOR_FLICKER_REMOVAL).apply {
-                                    onFinished = {
-
-                                        // 6. hide cardViews for animation
-                                        for (cardView in handCardViewsForAnimation) {cardView.toBack()}
-                                        for (cardView in handCardViewsForAnimation) {cardView.isVisible = false}
-
-                                        removeCardViewsForAnimation()
-                                    }
-                                }
-                            )
-                        }
-                    }
-                    gameScene.playAnimation(parallelAnimation)
-                }
-            }
-        )
-
-
-
-    }
-
-    protected fun playFlipCloseAnimation() {
-        val hand = rootService.currentGame.players[playerOfThisPane].hand
-        val flipAnimationList = mutableListOf<FlipAnimation<CardView>>()
-
-
-
-        // 1. show cardViews for animation
-        addCardViewsForAnimation(false) // 4 cardViews will be added
-
-        // 2. delay animation before flip-open animation to avoid briefly empty deck
-        gameScene.playAnimation(
-            DelayAnimation(DELAY_FOR_FLICKER_REMOVAL).apply {
-                onFinished = {
-                    // 3. hide cardViews for normal gameplay
-                    for (cardView in handCardViews) {cardView.isVisible = false}
-
-                    for (i in handCardViewsForAnimation.indices) {
-                        val flipCloseAnimation = FlipAnimation(
-                            gameComponentView = handCardViewsForAnimation[i],
-                            fromVisual = cardImageLoader.frontImageFor(hand[i].suit, hand[i].value),
-                            toVisual = cardImageLoader.backImage,
-                            duration = FLIP_ANIMATION_DURATION
-                        )
-                        flipAnimationList.add(flipCloseAnimation)
-                    }
-
-
-
-
+                    // play flip animation
+                    val flipAnimationList = createFlipAnimationList(flipOpen)
+                    for (cardView in handCardViewsForAnimation) {cardView.toFront()}
                     val parallelAnimation = ParallelAnimation(flipAnimationList).apply {
                         onFinished = {
 
-
-
-
-                            // 6. hide cardViews for animation
-                            for (cardView in handCardViewsForAnimation) {cardView.toBack()}
+                            // hide cardViews for animation
                             for (cardView in handCardViewsForAnimation) {cardView.isVisible = false}
 
-
-                            // 4. show cardViews for normal gameplay
-
-
-
                             removeCardViewsForAnimation()
+                            if (!flipOpen) {
+                                rootService.playerActionService.endTurn()
+                            }
 
-
-
-                            // 5. delay animation after flip-open animation to avoid briefly empty deck
-                            gameScene.playAnimation(
-                                DelayAnimation(DELAY_FOR_FLICKER_REMOVAL).apply {
-                                    onFinished = {
-
-                                        playerActionService.endTurn()
-                                    }
-                                }
-                            )
                         }
                     }
-
                     gameScene.playAnimation(parallelAnimation)
 
+                    // slightly shorter delay animation to avoid briefly empty deck
                     gameScene.playAnimation(
-                        DelayAnimation(FLIP_ANIMATION_DURATION - 100).apply {
+                        DelayAnimation(FLIP_ANIMATION_DURATION - DELAY_FOR_FLICKER_REMOVAL).apply {
                             onFinished = {
-                                showNormalCardViews()
+                                // show cardViews for normal gameplay
+                                showNormalCardViews(flipOpen)
                             }
                         }
                     )
-
-
                 }
             }
-
         )
     }
 
-    protected fun showNormalCardViews() {
-        refreshCardContent()
-        refreshCardSide()
-        for (cardView in handCardViews) {cardView.isVisible = true}
-        for (cardView in handCardViews) {cardView.toFront()}
+    protected fun createFlipAnimationList(flipOpen: Boolean): List<FlipAnimation<CardView>> {
 
+        val hand = rootService.currentGame.players[playerOfThisPane].hand
+        val flipAnimationList = mutableListOf<FlipAnimation<CardView>>()
+
+        for (i in handCardViewsForAnimation.indices) {
+            val flipAnimation = FlipAnimation(
+                gameComponentView = handCardViewsForAnimation[i],
+                fromVisual = if (flipOpen) cardImageLoader.backImage else cardImageLoader.frontImageFor(hand[i].suit, hand[i].value),
+                toVisual = if (flipOpen) cardImageLoader.frontImageFor(hand[i].suit, hand[i].value) else cardImageLoader.backImage,
+                duration = FLIP_ANIMATION_DURATION
+            )
+            flipAnimationList.add(flipAnimation)
+        }
+
+        return flipAnimationList
     }
 
-    protected fun addCardViewsForAnimation(forFlipOpen: Boolean) {
-        val amount = if (forFlipOpen) 5 else 4
-        for (i in 0 until amount) {
+
+    /**
+     * Show cardViews for normal gameplay.
+     */
+    protected fun showNormalCardViews(flipOpen: Boolean) {
+        refreshCardContent()
+        refreshCardSide()
+
+        val numOfCardsInHand = if (flipOpen) 5 else 4
+        for (i in 0 until numOfCardsInHand) {
+            handCardViews[i].apply {
+                isVisible = true
+                toBack()
+            }
+        }
+    }
+
+    protected fun addCardViewsForAnimation(flipOpen: Boolean) {
+        val numOfCardsInHand = if (flipOpen) 5 else 4
+        for (i in 0 until numOfCardsInHand) {
             handCardViewsForAnimation.add(createCardView(i))
             handCardViewsForAnimation[i].apply {
-                if(forFlipOpen) {
+
+                if(flipOpen) {
                     showBack()
                     isVisible = true
                 } else {
                     val hand = rootService.currentGame.players[playerOfThisPane].hand
-                    for (i in handCardViewsForAnimation.indices) {
-                        handCardViewsForAnimation[i].apply {
-                            frontVisual = cardImageLoader.frontImageFor(hand[i].suit, hand[i].value)
-                            showFront()
-                            isVisible = true
-                        }
-                    }
+                    frontVisual = cardImageLoader.frontImageFor(hand[i].suit, hand[i].value)
+                    showFront()
+                    isVisible = true
                 }
             }
         }
         addAll(handCardViewsForAnimation)
+        handCardViewsForAnimation.forEach {it.toFront()}
     }
 
     protected fun removeCardViewsForAnimation() {
-
         removeAll(handCardViewsForAnimation)
         handCardViewsForAnimation.clear()
     }
@@ -416,12 +350,12 @@ abstract class PanePlayer(
 
     }
 
-    override fun refreshAfterStartTurn() {
-        // refreshCardContent()
-        // refreshCardSide()
-        refreshButton()
-        refreshPlayerLable()
-    }
+    // override fun refreshAfterStartTurn() {
+    //     refreshCardContent()
+    //     refreshCardSide()
+    //     refreshButton()
+    //     refreshPlayerLable()
+    // }
 
     override fun refreshAfterDestroyCard() {
         refreshCardContent()
@@ -449,8 +383,6 @@ abstract class PanePlayer(
         refreshCardSide()
         refreshButton()
         refreshPlayerLable()
-
-
     }
 
     override fun refreshAfterEndGame() {
