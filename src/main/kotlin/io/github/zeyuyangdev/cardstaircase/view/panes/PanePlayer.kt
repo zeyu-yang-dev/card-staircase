@@ -44,7 +44,6 @@ abstract class PanePlayer(
     protected val handCardViewsForAnimation: MutableList<CardView> = mutableListOf()
 
     protected var cardsRevealed: Boolean = false
-    protected var indicatorVisible: Boolean = false
 
     /**
      * Displays the score of the player of this pane.
@@ -103,6 +102,7 @@ abstract class PanePlayer(
                 cardsRevealed = false
                 gameScene.state = UIState.TURN_READY_START
                 playFlipAnimation(false)
+                hideIndicator()
             }
 
             // 3. After the player has selected a card from hand:
@@ -138,6 +138,7 @@ abstract class PanePlayer(
                         val handCards = rootService.currentGame.players[playerOfThisPane].hand
                         gameScene.cardSelected = handCards[i]
                         gameScene.state = UIState.HAS_SELECTED
+                        moveIndicator(i)
                     }
                     refreshButton()
                 }
@@ -155,90 +156,19 @@ abstract class PanePlayer(
 
     //------------------------------------------------------------------------------------------------------------------
     /**
-     * Creates a cardView for this pane.
-     * @param index Index of the CardView in hand.
+     * Move the indicator to postion 0, 1, 2, 3, 4.
      */
-    protected fun createCardView(index: Int): CardView {
-        val cardView = CardView(
-            posX = HORIZ_DIS * index,
-            posY = 0,
-            width = CARD_WIDTH,
-            height = CARD_HEIGHT,
-            front = cardImageLoader.frontImageFor(CardSuit.HEARTS, CardValue.ACE),
-            back = cardImageLoader.backImage,
-        )
-        return cardView
-    }
-
-    /**
-     * Refreshes the visual of the button.
-     */
-    protected fun refreshButton() {
-
-        if (gameScene.state == UIState.TURN_READY_START) {
-            button.visual = BUTTON_DEFAULT_VISUAL
-            button.text = "START TURN"
-            button.isVisible = true
-        }
-
-        if (gameScene.state == UIState.HAS_SELECTED) {
-            button.visual = ColorVisual(255, 55, 55, 0.5)
-            button.text = "DISCARD"
-            button.isVisible = true
-
-        }
-
-        if (gameScene.state in setOf(UIState.HAS_DISCARDED, UIState.HAS_PLAYED)) {
-            button.visual = BUTTON_DEFAULT_VISUAL
-            button.text = "END TURN"
-            button.isVisible = true
-        }
-
-        if (rootService.currentGame.currentPlayer != playerOfThisPane) {
-            button.isVisible = false
+    protected fun moveIndicator(pos: Int) {
+        val coordinateX = INDICATOR_POS_X + HORIZ_DIS * pos
+        indicator.apply {
+            isVisible = true
+            posX = coordinateX
         }
     }
 
-    /**
-     * Refreshes labels displaying player's score and name.
-     */
-    protected fun refreshPlayerLable() {
-        val currentPlayer = rootService.currentGame.players[playerOfThisPane]
-        val playerName = currentPlayer.name
-        val playerScore = currentPlayer.score.toString()
-        playerLabel1.text = "SCORE: $playerScore"
-        playerLabel2.text = "PLAYER: $playerName"
+    protected fun hideIndicator() {
+        indicator.isVisible = false
     }
-
-    /**
-     * Refreshes the front visual for each cardView,
-     * if the player only has 4 hand cards, hide the 5th cardView.
-     */
-    protected fun refreshCardContent() {
-
-        val numOfCards = rootService.currentGame.players[playerOfThisPane].hand.size
-        val handCards = rootService.currentGame.players[playerOfThisPane].hand
-
-        for (i in 0 until numOfCards) {
-            handCardViews[i].apply {
-                val card = handCards[i]
-                frontVisual = cardImageLoader.frontImageFor(card.suit, card.value)
-            }
-        }
-
-        // The 5th cardView is only visible, when the player has 5 hand cards.
-        handCardViews[4].isVisible = (numOfCards == 5)
-    }
-
-    /**
-     * Refreshes the card side of all cardViews based on cardsRevealed.
-     */
-    protected fun refreshCardSide() {
-        for (cardView in handCardViews) {
-            if (cardsRevealed) cardView.showFront() else cardView.showBack()
-        }
-    }
-
     //------------------------------------------------------------------------------------------------------------------
 
     protected fun playFlipAnimation(flipOpen: Boolean) {
@@ -303,7 +233,6 @@ abstract class PanePlayer(
         return flipAnimationList
     }
 
-
     /**
      * Show cardViews for normal gameplay.
      */
@@ -346,50 +275,108 @@ abstract class PanePlayer(
         handCardViewsForAnimation.clear()
     }
     //------------------------------------------------------------------------------------------------------------------
-    override fun refreshAfterStartNewGame() {
-        cardsRevealed = false
+    /**
+     * Refreshes the front visual for each cardView,
+     * if the player only has 4 hand cards, hide the 5th cardView.
+     */
+    protected fun refreshCardContent() {
+
+        val numOfCards = rootService.currentGame.players[playerOfThisPane].hand.size
+        val handCards = rootService.currentGame.players[playerOfThisPane].hand
+
+        for (i in 0 until numOfCards) {
+            handCardViews[i].apply {
+                val card = handCards[i]
+                frontVisual = cardImageLoader.frontImageFor(card.suit, card.value)
+            }
+        }
+
+        // The 5th cardView is only visible, when the player has 5 hand cards.
+        handCardViews[4].isVisible = (numOfCards == 5)
+    }
+
+    /**
+     * Refreshes the card side of all cardViews based on cardsRevealed.
+     */
+    protected fun refreshCardSide() {
+        for (cardView in handCardViews) {
+            if (cardsRevealed) cardView.showFront() else cardView.showBack()
+        }
+    }
+
+    /**
+     * Refreshes the visual of the button.
+     */
+    protected fun refreshButton() {
+
+        if (gameScene.state == UIState.TURN_READY_START) {
+            button.visual = BUTTON_DEFAULT_VISUAL
+            button.text = "START TURN"
+            button.isVisible = true
+        }
+
+        if (gameScene.state == UIState.HAS_SELECTED) {
+            button.visual = ColorVisual(255, 55, 55, 0.5)
+            button.text = "DISCARD"
+            button.isVisible = true
+
+        }
+
+        if (gameScene.state in setOf(UIState.HAS_DISCARDED, UIState.HAS_PLAYED)) {
+            button.visual = BUTTON_DEFAULT_VISUAL
+            button.text = "END TURN"
+            button.isVisible = true
+        }
+
+        if (rootService.currentGame.currentPlayer != playerOfThisPane) {
+            button.isVisible = false
+        }
+    }
+
+    /**
+     * Refreshes labels displaying player's score and name.
+     */
+    protected fun refreshPlayerLable() {
+        val currentPlayer = rootService.currentGame.players[playerOfThisPane]
+        val playerName = currentPlayer.name
+        val playerScore = currentPlayer.score.toString()
+        playerLabel1.text = "SCORE: $playerScore"
+        playerLabel2.text = "PLAYER: $playerName"
+    }
+
+    protected fun refreshPaneComponents() {
         refreshCardContent()
         refreshCardSide()
         refreshButton()
         refreshPlayerLable()
-
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Creates a cardView for this pane.
+     * @param index Index of the CardView in hand.
+     */
+    protected fun createCardView(index: Int): CardView {
+        val cardView = CardView(
+            posX = HORIZ_DIS * index,
+            posY = 0,
+            width = CARD_WIDTH,
+            height = CARD_HEIGHT,
+            front = cardImageLoader.frontImageFor(CardSuit.HEARTS, CardValue.ACE),
+            back = cardImageLoader.backImage,
+        )
+        return cardView
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    override fun refreshAfterStartNewGame() {
+        cardsRevealed = false
+        hideIndicator()
+        refreshPaneComponents()
     }
 
     override fun refreshAfterStartTurn() {}
-
-    override fun refreshAfterDestroyCard() {
-        refreshCardContent()
-        refreshCardSide()
-        refreshButton()
-        refreshPlayerLable()
-    }
-
-    override fun refreshAfterPlayCard() {
-        refreshCardContent()
-        refreshCardSide()
-        refreshButton()
-        refreshPlayerLable()
-    }
-
-    override fun refreshAfterDiscardCard() {
-        refreshCardContent()
-        refreshCardSide()
-        refreshButton()
-        refreshPlayerLable()
-    }
-
-    override fun refreshAfterEndTurn() {
-        refreshCardContent()
-        refreshCardSide()
-        refreshButton()
-        refreshPlayerLable()
-    }
-
-    override fun refreshAfterEndGame() {
-        refreshCardContent()
-        refreshCardSide()
-        refreshButton()
-        refreshPlayerLable()
-    }
-
+    override fun refreshAfterDestroyCard() = refreshPaneComponents()
+    override fun refreshAfterPlayCard() = refreshPaneComponents()
+    override fun refreshAfterDiscardCard() = refreshPaneComponents()
+    override fun refreshAfterEndTurn() = refreshPaneComponents()
+    override fun refreshAfterEndGame() = refreshPaneComponents()
 }
