@@ -74,8 +74,6 @@ class MainMenuScene(
         visual = ImageVisual("game_title_03.png")
     )
 
-
-
     init {
         this.background = ImageVisual("start_background.png")
 
@@ -86,7 +84,5 @@ class MainMenuScene(
             exitGameButton,
             titleLabel
         )
-
-
     }
 }

@@ -16,6 +16,7 @@ import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.animation.DelayAnimation
 import tools.aqua.bgw.animation.ParallelAnimation
+import tools.aqua.bgw.visual.ImageVisual
 
 /**
  * Abstract base class for all player panes.
@@ -39,10 +40,11 @@ abstract class PanePlayer(
     protected val cardImageLoader = CardImageLoader()
     protected val playerActionService = rootService.playerActionService
 
-    protected var cardsRevealed: Boolean = false
-
     protected val handCardViews: MutableList<CardView> = mutableListOf()
     protected val handCardViewsForAnimation: MutableList<CardView> = mutableListOf()
+
+    protected var cardsRevealed: Boolean = false
+    protected var indicatorVisible: Boolean = false
 
     /**
      * Displays the score of the player of this pane.
@@ -112,6 +114,14 @@ abstract class PanePlayer(
         }
     }
 
+    protected val indicator = Label(
+        width = INDICATOR_WIDTH,
+        height = INDICATOR_HEIGHT,
+        posX = INDICATOR_POS_X,
+        posY = INDICATOR_POS_Y,
+        visual = ImageVisual("indicator.png")
+    )
+
     //------------------------------------------------------------------------------------------------------------------
     init {
 
@@ -119,9 +129,7 @@ abstract class PanePlayer(
             handCardViews.add(createCardView(i))
         }
 
-
-
-        // 定义每一个CardView的按钮行为
+        // Define the function upon click for each cardView.
         for (i in handCardViews.indices) {
             handCardViews[i].apply {
                 onMouseClicked = {
@@ -132,15 +140,17 @@ abstract class PanePlayer(
                         gameScene.state = UIState.HAS_SELECTED
                     }
                     refreshButton()
-
                 }
             }
         }
 
         addAll(handCardViews)
-        addAll(button)
-        addAll(playerLabel1, playerLabel2)
-
+        addAll(
+            button,
+            playerLabel1,
+            playerLabel2,
+            indicator
+        )
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -159,8 +169,6 @@ abstract class PanePlayer(
         )
         return cardView
     }
-
-
 
     /**
      * Refreshes the visual of the button.
@@ -337,9 +345,6 @@ abstract class PanePlayer(
         removeAll(handCardViewsForAnimation)
         handCardViewsForAnimation.clear()
     }
-
-
-
     //------------------------------------------------------------------------------------------------------------------
     override fun refreshAfterStartNewGame() {
         cardsRevealed = false
@@ -350,12 +355,7 @@ abstract class PanePlayer(
 
     }
 
-    // override fun refreshAfterStartTurn() {
-    //     refreshCardContent()
-    //     refreshCardSide()
-    //     refreshButton()
-    //     refreshPlayerLable()
-    // }
+    override fun refreshAfterStartTurn() {}
 
     override fun refreshAfterDestroyCard() {
         refreshCardContent()
