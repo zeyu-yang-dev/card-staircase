@@ -14,7 +14,7 @@ import tools.aqua.bgw.core.Color
 
 
 
-class VictoryScene(
+class ResultMenuScene(
     private val rootService: RootService
 ) : MenuScene(
     SCREEN_WIDTH,

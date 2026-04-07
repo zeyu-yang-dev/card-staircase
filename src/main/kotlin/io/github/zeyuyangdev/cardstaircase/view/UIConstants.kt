@@ -22,6 +22,12 @@ val MMS_TEXT_FONT = Font(
 )
 val TEXT_FIELD_VISUAL = ColorVisual(55, 55, 55, 0.5)
 
+const val MMS_TITLE_SCALE = 0.5
+const val MMS_TITLE_WIDTH = 1008 * MMS_TITLE_SCALE
+const val MMS_TITLE_HEIGHT = 304 * MMS_TITLE_SCALE
+const val MMS_TITLE_POS_X = (SCREEN_WIDTH - MMS_TITLE_WIDTH) / 2
+const val MMS_TITLE_POS_Y = 230
+
 // PanePlayer, common properties:
 const val DELAY_FOR_FLICKER_REMOVAL = 10
 const val FLIP_ANIMATION_DURATION = 600
