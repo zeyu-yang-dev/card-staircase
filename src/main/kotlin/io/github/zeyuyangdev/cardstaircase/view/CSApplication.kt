@@ -2,6 +2,7 @@ package io.github.zeyuyangdev.cardstaircase.view
 
 import io.github.zeyuyangdev.cardstaircase.service.RootService
 import io.github.zeyuyangdev.cardstaircase.service.Refreshable
+import tools.aqua.bgw.animation.DelayAnimation
 
 import tools.aqua.bgw.event.KeyCode
 import tools.aqua.bgw.core.BoardGameApplication
@@ -31,7 +32,7 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
         }
     }
 
-    private val victoryScene = VictoryScene(rootService).apply {
+    private val resultMenuScene = ResultMenuScene(rootService).apply {
         replayButton.onMouseClicked = {
             val player1Name = rootService.currentGame.players[1].name
             val player2Name = rootService.currentGame.players[0].name
@@ -63,21 +64,23 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
             gameScene.paneStacks,
             gameScene.panePlayerLeft,
             gameScene.panePlayerRight,
-            victoryScene,
+            resultMenuScene,
             mainMenuScene
         )
 
 
-        this.showMenuScene(mainMenuScene)
+        showMenuScene(mainMenuScene)
     }
 
     override fun refreshAfterStartNewGame() {
-        this.hideMenuScene()
-        this.showGameScene(gameScene)
+
+        hideMenuScene()
+        showGameScene(gameScene)
+
     }
 
     override fun refreshAfterEndGame() {
-        this.showMenuScene(victoryScene)
+        showMenuScene(resultMenuScene)
     }
 
 }

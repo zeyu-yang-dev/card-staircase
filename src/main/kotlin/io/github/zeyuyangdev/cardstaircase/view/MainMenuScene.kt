@@ -4,6 +4,7 @@ import io.github.zeyuyangdev.cardstaircase.service.Refreshable
 import io.github.zeyuyangdev.cardstaircase.service.RootService
 import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.TextField
+import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.MenuScene
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
@@ -49,7 +50,6 @@ class MainMenuScene(
         onMouseClicked = {
             val player1Name = player1TextField.text
             val player2Name = player2TextField.text
-
             if (player1Name.isNotEmpty() && player2Name.isNotEmpty()) {
                 rootService.gameService.startNewGame(player1Name, player2Name)
             }
@@ -66,10 +66,26 @@ class MainMenuScene(
         visual = ColorVisual(255, 55, 55, 0.5)
     )
 
+    val titleLabel = Label(
+        width = MMS_TITLE_WIDTH,
+        height = MMS_TITLE_HEIGHT,
+        posX = MMS_TITLE_POS_X,
+        posY = MMS_TITLE_POS_Y,
+        visual = ImageVisual("game_title_03.png")
+    )
+
+
+
     init {
         this.background = ImageVisual("start_background.png")
 
-        addComponents(player1TextField, player2TextField, startGameButton, exitGameButton)
+        addComponents(
+            player1TextField,
+            player2TextField,
+            startGameButton,
+            exitGameButton,
+            titleLabel
+        )
 
 
     }
