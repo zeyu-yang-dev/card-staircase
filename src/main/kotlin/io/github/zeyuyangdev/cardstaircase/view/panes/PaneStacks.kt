@@ -15,7 +15,7 @@ import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.core.Color
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
-
+import tools.aqua.bgw.visual.ImageVisual
 
 
 class PaneStacks(
@@ -32,10 +32,10 @@ class PaneStacks(
     private val cardImageLoader = CardImageLoader()
 
     val drawStackView = CardView(
-        posX = 0,
-        posY = 0,
         width = CARD_WIDTH,
         height = CARD_HEIGHT,
+        posX = 0,
+        posY = 0,
         front = cardImageLoader.frontImageFor(CardSuit.HEARTS, CardValue.ACE),
         back = cardImageLoader.backImage,
     ).apply {
@@ -43,10 +43,10 @@ class PaneStacks(
     }
 
     val discardStackView = CardView(
-        posX = CARD_WIDTH + DIS_BET_CARDS,
-        posY = 0,
         width = CARD_WIDTH,
         height = CARD_HEIGHT,
+        posX = CARD_WIDTH + DIS_BET_CARDS,
+        posY = 0,
         front = cardImageLoader.frontImageFor(CardSuit.HEARTS, CardValue.ACE),
         back = cardImageLoader.backImage,
     ).apply {
@@ -56,15 +56,11 @@ class PaneStacks(
     val stackCardViews = listOf(drawStackView, discardStackView)
 
     val gameLogLabel: Label = Label(
-        posX = BUTTON_POS_X + (PPR_POS_X - STACKS_POS_X),
+        width = GAME_LOG_WIDTH,
+        height = GAME_LOG_HEIGHT,
+        posX = GAME_LOG_POS_X,
         posY = GAME_LOG_POS_Y,
-        width = BUTTON_WIDTH,
-        height = BUTTON_HEIGHT,
-        text = "GAME LOG",
-        font = Font(size = 24, color = Color.WHITE,
-            fontWeight = Font.FontWeight.SEMI_BOLD, fontStyle = Font.FontStyle.ITALIC),
-        alignment = Alignment.CENTER,
-        visual = ColorVisual(55, 55, 55, 0.5),
+        visual = ImageVisual("game_log_label.png")
     ).apply {
         onMouseEntered = {
             this.isVisible = false
@@ -75,10 +71,10 @@ class PaneStacks(
 
 
     val gameLogListView: ListView<String> = ListView<String>(
-        posX = PLAYER_LABEL_POS_X + (PPR_POS_X - STACKS_POS_X),
-        posY = GAME_LOG_POS_Y,
         width = PLAYER_LABEL_WIDTH,
         height = BUTTON_HEIGHT * 6,
+        posX = PLAYER_LABEL_POS_X + (PPR_POS_X - STACKS_POS_X),
+        posY = GAME_LOG_POS_Y,
         items = emptyList(),
         font = Font(size = 20, color = Color.WHITE,
             fontWeight = Font.FontWeight.NORMAL, fontStyle = Font.FontStyle.NORMAL),
