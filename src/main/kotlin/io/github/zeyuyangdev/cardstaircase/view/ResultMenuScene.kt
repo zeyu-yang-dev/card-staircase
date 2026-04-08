@@ -5,16 +5,14 @@ import io.github.zeyuyangdev.cardstaircase.service.Refreshable
 
 import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.core.MenuScene
-import tools.aqua.bgw.util.Font
-import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.components.uicomponents.ListView
 import tools.aqua.bgw.components.uicomponents.Orientation
 import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
-import tools.aqua.bgw.core.Color
 
-
-
+/**
+ * The menu scene showing the game result.
+ */
 class ResultMenuScene(
     private val rootService: RootService
 ) : MenuScene(
@@ -69,7 +67,7 @@ class ResultMenuScene(
         height = WINNER_NAME_HEIGHT,
         posX = WINNER_NAME_POS_X,
         posY = WINNER_NAME_POS_Y,
-        font = RMS_BTN_FONT,
+        font = WINNER_NAME_FONT,
         visual = RMS_LIST_BG_VISUAL
     )
 
@@ -78,46 +76,10 @@ class ResultMenuScene(
         height = WINNER_TITLE_HEIGHT,
         posX = WINNER_TITLE_POS_X,
         posY = WINNER_TITLE_POS_Y,
-        visual = RMS_LIST_BG_VISUAL
+        visual = ImageVisual("winner_title.png")
     )
 
-
-
-
-
-
-
-
-
-    private fun refreshScoreBoard() {
-        val players = rootService.currentGame.players
-        val winner = players.maxBy { it.score }
-        val loser = players.minBy { it.score }
-
-        nameList.items.setAll(
-            listOf(
-                "PLAYER",
-                winner.name,
-                loser.name
-            )
-        )
-
-        scoreList.items.setAll(
-            listOf(
-                "SCORE",
-                winner.score.toString(),
-                loser.score.toString()
-            )
-        )
-
-        winnerName.text = winner.name
-    }
-
-
-
-
     init {
-
         this.background = ImageVisual("end_background.png")
 
         addComponents(
@@ -126,22 +88,43 @@ class ResultMenuScene(
             replayButton,
             exitButton,
             winnerName,
-            winnerTitle,
-
+            winnerTitle
         )
-
-
     }
 
+    /**
+     * Refreshes every variable component.
+     */
+    private fun refreshScoreBoard() {
+        val players = rootService.currentGame.players
+        val winner = players.maxBy { it.score }
+        val loser = players.first { it != winner }
+
+        // refreshes nameList
+        nameList.items.setAll(
+            listOf(
+                "PLAYER",
+                winner.name,
+                loser.name
+            )
+        )
+
+        // refreshes scoreList
+        scoreList.items.setAll(
+            listOf(
+                "SCORE",
+                winner.score.toString(),
+                loser.score.toString()
+            )
+        )
+
+        // refreshes name of the winner
+        winnerName.text = winner.name
+    }
 
 
 
     override fun refreshAfterEndGame() {
         refreshScoreBoard()
     }
-
-
-
-
-
 }

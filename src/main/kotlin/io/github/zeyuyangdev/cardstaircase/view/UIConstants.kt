@@ -104,13 +104,6 @@ const val GAME_LOG_HEIGHT = BUTTON_HEIGHT * GAME_LOG_SCALE
 const val GAME_LOG_POS_X = PPR_POS_X + (CARD_WIDTH * 5 + DIS_BET_CARDS * 4 - GAME_LOG_WIDTH) / 2 - STACKS_POS_X
 const val GAME_LOG_POS_Y = 0
 
-val GAME_LOG_LABEL_FONT = Font(
-    size = 24,
-    color = Color.WHITE,
-    fontWeight = Font.FontWeight.SEMI_BOLD,
-    fontStyle = Font.FontStyle.ITALIC
-)
-
 val GAME_LOG_LIST_FONT = Font(
     size = 16,
     color = Color.WHITE,
@@ -126,7 +119,7 @@ const val RMS_DIS_TO_MIDDLE_LINE = 20
 
 const val RMS_LIST_WIDTH = RMS_WIDTH * 0.2
 const val RMS_LIST_HEIGHT = 100
-val RMS_LIST_BG_VISUAL = ColorVisual(55, 55, 55, 0.5)
+val RMS_LIST_BG_VISUAL = ColorVisual.TRANSPARENT
 val RMS_LIST_FONT = Font(
     size = 18,
     color = Color.WHITE,
@@ -145,21 +138,26 @@ const val RMS_REPLAY_BTN_POS_X = RMS_NAME_LIST_POS_X
 const val RMS_EXIT_BTN_POS_X = RMS_SCORE_LIST_POS_X
 const val RMS_BTN_POS_Y = RMS_LIST_POS_Y + RMS_LIST_HEIGHT + 30
 val RMS_BTN_FONT = Font(
-    size = 24,
+    size = 18,
     color = Color.WHITE,
     fontWeight = Font.FontWeight.SEMI_BOLD,
     fontStyle = Font.FontStyle.NORMAL
 )
-
+val WINNER_NAME_FONT = Font(
+    size = 26,
+    color = Color.WHITE,
+    fontWeight = Font.FontWeight.SEMI_BOLD,
+    fontStyle = Font.FontStyle.NORMAL
+)
 const val WINNER_NAME_WIDTH = RMS_WIDTH * 0.25
 const val WINNER_NAME_HEIGHT = WINNER_NAME_WIDTH / 4
 const val WINNER_NAME_POS_X = (RMS_WIDTH - WINNER_NAME_WIDTH) / 2
 const val WINNER_NAME_POS_Y = RMS_MIDDLE_LINE - RMS_DIS_TO_MIDDLE_LINE - WINNER_NAME_HEIGHT
 
-const val WINNER_TITLE_WIDTH = RMS_WIDTH * 0.3
+const val WINNER_TITLE_WIDTH = RMS_WIDTH * 0.4
 const val WINNER_TITLE_HEIGHT = WINNER_TITLE_WIDTH / 3
-const val WINNER_TITLE_POS_X = (RMS_WIDTH - WINNER_TITLE_WIDTH) / 2
-const val WINNER_TITLE_POS_Y = WINNER_NAME_POS_Y - WINNER_TITLE_HEIGHT - RMS_DIS_TO_MIDDLE_LINE
+const val WINNER_TITLE_POS_X = (RMS_WIDTH - WINNER_TITLE_WIDTH) / 2 + WINNER_TITLE_WIDTH * 0.025
+const val WINNER_TITLE_POS_Y = WINNER_NAME_POS_Y - WINNER_TITLE_HEIGHT + WINNER_TITLE_WIDTH * 0.025
 
 
 
