@@ -11,16 +11,11 @@ import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.components.uicomponents.ListView
 import tools.aqua.bgw.components.uicomponents.Orientation
-import tools.aqua.bgw.core.Alignment
-import tools.aqua.bgw.core.Color
-import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
-
-
+import tools.aqua.bgw.visual.ImageVisual
 
 class PaneStacks(
-    private val rootService: RootService,
-    private val gameScene: GameScene
+    private val rootService: RootService
 ) : Pane<ComponentView>(
     STACKS_POS_X,
     STACKS_POS_Y,
@@ -32,10 +27,10 @@ class PaneStacks(
     private val cardImageLoader = CardImageLoader()
 
     val drawStackView = CardView(
-        posX = 0,
-        posY = 0,
         width = CARD_WIDTH,
         height = CARD_HEIGHT,
+        posX = 0,
+        posY = 0,
         front = cardImageLoader.frontImageFor(CardSuit.HEARTS, CardValue.ACE),
         back = cardImageLoader.backImage,
     ).apply {
@@ -43,28 +38,22 @@ class PaneStacks(
     }
 
     val discardStackView = CardView(
-        posX = CARD_WIDTH + DIS_BET_CARDS,
-        posY = 0,
         width = CARD_WIDTH,
         height = CARD_HEIGHT,
+        posX = CARD_WIDTH + DIS_BET_CARDS,
+        posY = 0,
         front = cardImageLoader.frontImageFor(CardSuit.HEARTS, CardValue.ACE),
         back = cardImageLoader.backImage,
     ).apply {
         this.showFront()
     }
 
-    val stackCardViews = listOf(drawStackView, discardStackView)
-
     val gameLogLabel: Label = Label(
-        posX = BUTTON_POS_X + (PPR_POS_X - STACKS_POS_X),
+        width = GAME_LOG_WIDTH,
+        height = GAME_LOG_HEIGHT,
+        posX = GAME_LOG_POS_X,
         posY = GAME_LOG_POS_Y,
-        width = BUTTON_WIDTH,
-        height = BUTTON_HEIGHT,
-        text = "GAME LOG",
-        font = Font(size = 24, color = Color.WHITE,
-            fontWeight = Font.FontWeight.SEMI_BOLD, fontStyle = Font.FontStyle.ITALIC),
-        alignment = Alignment.CENTER,
-        visual = ColorVisual(55, 55, 55, 0.5),
+        visual = ImageVisual("game_log_label.png")
     ).apply {
         onMouseEntered = {
             this.isVisible = false
@@ -72,31 +61,40 @@ class PaneStacks(
         }
     }
 
-
-
     val gameLogListView: ListView<String> = ListView<String>(
-        posX = PLAYER_LABEL_POS_X + (PPR_POS_X - STACKS_POS_X),
-        posY = GAME_LOG_POS_Y,
         width = PLAYER_LABEL_WIDTH,
         height = BUTTON_HEIGHT * 6,
+        posX = PLAYER_LABEL_POS_X + (PPR_POS_X - STACKS_POS_X),
+        posY = GAME_LOG_POS_Y,
         items = emptyList(),
-        font = Font(size = 20, color = Color.WHITE,
-            fontWeight = Font.FontWeight.NORMAL, fontStyle = Font.FontStyle.NORMAL),
-        // alignment = Alignment.TOP_CENTER,
+        font = GAME_LOG_LIST_FONT,
         visual = ColorVisual(55, 55, 55, 0.5),
         orientation = Orientation.VERTICAL,
     ).apply {
         this.isVisible = false
     }
-
+    //------------------------------------------------------------------------------------------------------------------
+    init {
+        addAll(
+            drawStackView,
+            discardStackView,
+            gameLogLabel,
+            gameLogListView
+        )
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Refreshes the content displayed in the expanded game log list.
+     */
     private fun refreshGameLog() {
         val gameLog = rootService.currentGame.gameLog
         gameLogListView.items.setAll(gameLog.asReversed())
     }
 
-
-
-    fun refreshStacks() {
+    /**
+     * Refreshes the cardViews representing draw stack and discard stack.
+     */
+    private fun refreshStacks() {
         val currentGame = rootService.currentGame
         requireNotNull(currentGame) {"refreshStacks() failed, currentGame is null"}
 
@@ -133,62 +131,21 @@ class PaneStacks(
                 this.showFront()
             }
         }
-
     }
 
-
-
-    init {
-
-        addAll(stackCardViews)
-        addAll(gameLogLabel, gameLogListView)
-
-
-
-    }
-
-
-    override fun refreshAfterStartNewGame() {
-        refreshStacks()
+    private fun refreshThisPane() {
         refreshGameLog()
-    }
-
-
-
-    override fun refreshAfterStartTurn() {
         refreshStacks()
-        refreshGameLog()
     }
 
-    override fun refreshAfterDestroyCard() {
-        refreshStacks()
-        refreshGameLog()
-    }
-
-    override fun refreshAfterPlayCard() {
-        refreshStacks()
-        refreshGameLog()
-    }
-
-    override fun refreshAfterDiscardCard() {
-        refreshStacks()
-        refreshGameLog()
-    }
-
-    override fun refreshAfterEndTurn() {
-        refreshStacks()
-        refreshGameLog()
-    }
-
-    override fun refreshAfterShuffleStack() {
-        refreshStacks()
-        refreshGameLog()
-    }
-
-    override fun refreshAfterEndGame() {
-        refreshStacks()
-        refreshGameLog()
-    }
+    override fun refreshAfterStartNewGame() = refreshThisPane()
+    override fun refreshAfterStartTurn() = refreshThisPane()
+    override fun refreshAfterDestroyCard() = refreshThisPane()
+    override fun refreshAfterPlayCard() = refreshThisPane()
+    override fun refreshAfterDiscardCard() = refreshThisPane()
+    override fun refreshAfterEndTurn() = refreshThisPane()
+    override fun refreshAfterShuffleStack() = refreshThisPane()
+    override fun refreshAfterEndGame() = refreshThisPane()
 
 
 

@@ -91,13 +91,30 @@ const val BOTT_LEFT_OFFSET_X = 0
 const val BOTT_LEFT_OFFSET_Y = CARD_HEIGHT * 4 + DIS_BET_CARDS * 4
 
 // PaneStacks:
-const val STACKS_POS_X = (SCREEN_WIDTH - CARD_WIDTH * 2 - DIS_BET_CARDS) / 2
-const val STACKS_POS_Y = 30
-
 const val STACKS_WIDTH = CARD_WIDTH * 2 + DIS_BET_CARDS
 const val STACKS_HEIGHT = CARD_HEIGHT
+const val STACKS_POS_X = PPL_POS_X + (CARD_WIDTH * 3 + DIS_BET_CARDS * 3) / 2
+const val STACKS_POS_Y = DIS_TO_BOTTOM + 15
 
-const val GAME_LOG_POS_Y = (CARD_HEIGHT - BUTTON_HEIGHT) / 2 - STACKS_POS_Y
+const val GAME_LOG_SCALE = 1.25
+const val GAME_LOG_WIDTH = BUTTON_WIDTH * GAME_LOG_SCALE
+const val GAME_LOG_HEIGHT = BUTTON_HEIGHT * GAME_LOG_SCALE
+const val GAME_LOG_POS_X = PPR_POS_X + (CARD_WIDTH * 5 + DIS_BET_CARDS * 4 - GAME_LOG_WIDTH) / 2 - STACKS_POS_X
+const val GAME_LOG_POS_Y = 0
+
+val GAME_LOG_LABEL_FONT = Font(
+    size = 24,
+    color = Color.WHITE,
+    fontWeight = Font.FontWeight.SEMI_BOLD,
+    fontStyle = Font.FontStyle.ITALIC
+)
+
+val GAME_LOG_LIST_FONT = Font(
+    size = 16,
+    color = Color.WHITE,
+    fontWeight = Font.FontWeight.NORMAL,
+    fontStyle = Font.FontStyle.NORMAL
+)
 
 // ResultMenuScene:
 const val WINNER_LABLE_WIDTH = 300

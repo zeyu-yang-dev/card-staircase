@@ -56,7 +56,7 @@ class GameScene(
         }
     }
 
-    val paneStacks = PaneStacks(rootService, this)
+    val paneStacks = PaneStacks(rootService)
 
     init {
         this.background = ImageVisual("game_background.png")

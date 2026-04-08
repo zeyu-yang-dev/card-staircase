@@ -25,7 +25,7 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
         // Decrease the score of the current player by 5
         currentPlayer.score -= 5
 
-        // Log the last action of the current player
+        // Log the action of the current player
         currentGame.gameLog.add("${playerName} destroyed ${card} from stairs.")
 
         // Mark that the stairs has been modified
@@ -70,8 +70,8 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
         currentPlayer.score += card.value.toInt()
         currentPlayer.score += target.value.toInt()
 
-        // Log the last action of the current player
-        currentGame.gameLog.add("${playerName} played ${card} targeting ${target}.")
+        // Log the action of the current player
+        currentGame.gameLog.add("${playerName} matched ${card} with ${target}.")
 
         // Mark that the stairs has been modified
         rootService.currentGame.stairsModified = true
@@ -104,7 +104,7 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
         // The card goes to the discard stack
         currentGame.discardStack.push(card)
 
-        // Log the last action of the current player
+        // Log the action of the current player
         currentGame.gameLog.add("${playerName} discarded ${card} from hand.")
 
         onAllRefreshables { refreshAfterDiscardCard() }

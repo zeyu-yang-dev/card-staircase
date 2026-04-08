@@ -102,7 +102,6 @@ abstract class PanePlayer(
                 cardsRevealed = false
                 gameScene.state = UIState.TURN_READY_START
                 playFlipAnimation(false)
-                hideIndicator()
             }
 
             // 3. After the player has selected a card from hand:
@@ -373,10 +372,18 @@ abstract class PanePlayer(
         refreshPaneComponents()
     }
 
+    override fun refreshAfterPlayCard() {
+        refreshPaneComponents()
+        hideIndicator()
+    }
+
+    override fun refreshAfterDiscardCard() {
+        refreshPaneComponents()
+        hideIndicator()
+    }
+
     override fun refreshAfterStartTurn() {}
     override fun refreshAfterDestroyCard() = refreshPaneComponents()
-    override fun refreshAfterPlayCard() = refreshPaneComponents()
-    override fun refreshAfterDiscardCard() = refreshPaneComponents()
     override fun refreshAfterEndTurn() = refreshPaneComponents()
     override fun refreshAfterEndGame() = refreshPaneComponents()
 }
