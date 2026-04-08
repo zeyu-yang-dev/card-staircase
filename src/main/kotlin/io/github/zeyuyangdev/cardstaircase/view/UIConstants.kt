@@ -117,6 +117,11 @@ val GAME_LOG_LIST_FONT = Font(
 )
 
 // ResultMenuScene:
+const val RMS_WIDTH = 600
+const val RMS_HEIGHT = RMS_WIDTH
+
+
+
 const val WINNER_LABLE_WIDTH = 300
 const val WINNER_LABLE_HEIGHT = 600
 const val WINNER_LABEL_POS_X = (1920 - WINNER_LABLE_WIDTH * 2) / 3

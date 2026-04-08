@@ -17,8 +17,8 @@ import tools.aqua.bgw.core.Color
 class ResultMenuScene(
     private val rootService: RootService
 ) : MenuScene(
-    SCREEN_WIDTH,
-    SCREEN_HEIGHT
+    RMS_WIDTH,
+    RMS_HEIGHT
 ), Refreshable {
 
     private val winnerLabel: ListView<String> = ListView(
