@@ -315,7 +315,7 @@ abstract class PanePlayer(
         }
 
         if (gameScene.state == UIState.HAS_SELECTED) {
-            button.visual = ColorVisual(255, 55, 55, 0.5)
+            button.visual = RED_BTN_VISUAL
             button.text = "DISCARD"
             button.isVisible = true
 

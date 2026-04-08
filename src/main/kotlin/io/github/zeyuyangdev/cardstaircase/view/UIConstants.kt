@@ -33,7 +33,7 @@ const val MMS_TITLE_POS_Y = 230
 // PanePlayer, common properties:
 const val DELAY_FOR_FLICKER_REMOVAL = 10
 const val FLIP_ANIMATION_DURATION = 600
-val PANE_BG_VISUAL = ColorVisual(255, 55, 55, 0.3)
+val PANE_BG_VISUAL = ColorVisual.TRANSPARENT
 const val CARDS_CALE = 0.75
 const val CARD_WIDTH = 130 * CARDS_CALE
 const val CARD_HEIGHT = 200 * CARDS_CALE
