@@ -15,8 +15,8 @@ class GameService(private val rootService: RootService): AbstractRefreshingServi
         val player_01 = Player(shuffled[0])
         val player_02 = Player(shuffled[1])
 
-        // Create a new instance of Game class
-        rootService.currentGame = Game(players = listOf(player_01, player_02))
+        // Create a new instance of CardStaircase class
+        rootService.currentGame = CardStaircase(players = listOf(player_01, player_02))
         val currentGame = rootService.currentGame
 
         // Create a new draw Stack

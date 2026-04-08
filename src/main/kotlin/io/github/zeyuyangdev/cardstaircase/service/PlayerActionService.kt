@@ -34,7 +34,7 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
         // If the game end condition is fulfilled, call endGame()
         if (currentGame.stairs.all { it.isEmpty() }) {
             rootService.gameService.endGame()
-            println("Game ended in condition 1.")
+            println("CardStaircase ended in condition 1.")
         }
 
         onAllRefreshables { refreshAfterDestroyCard() }
@@ -80,7 +80,7 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
         // If the game end condition is fulfilled, call endGame()
         if (rootService.currentGame.stairs.all { it.isEmpty() }) {
             rootService.gameService.endGame()
-            println("Game ended in condition 1.")
+            println("CardStaircase ended in condition 1.")
         }
 
         onAllRefreshables { refreshAfterPlayCard() }
@@ -126,7 +126,7 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
         // 为了防止drawStack和discardStack同时为空，需要直接强制结束游戏
         if (currentGame.drawStack.isEmpty()) {
             rootService.gameService.endGame()
-            println("Game ended in condition 2.")
+            println("CardStaircase ended in condition 2.")
             return
         }
 
@@ -141,7 +141,7 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
         // If the game end condition is fulfilled, call endGame()
         if (currentGame.drawStack.isEmpty() && currentGame.stairsModified == false) {
             rootService.gameService.endGame()
-            println("Game ended in condition 3.")
+            println("CardStaircase ended in condition 3.")
         }
 
         // shuffle the stack if the draw stack is empty and discard stack is not empty

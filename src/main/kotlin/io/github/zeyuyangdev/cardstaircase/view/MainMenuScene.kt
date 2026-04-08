@@ -45,7 +45,7 @@ class MainMenuScene(
         height = TEXT_FIELD_HEIGHT,
         text = "START",
         font = MMS_TEXT_FONT,
-        visual = ColorVisual(55, 255, 55, 0.5)
+        visual = GREEN_BTN_VISUAL
     ).apply {
         onMouseClicked = {
             val player1Name = player1TextField.text
@@ -63,7 +63,7 @@ class MainMenuScene(
         height = TEXT_FIELD_HEIGHT,
         text = "EXIT",
         font = MMS_TEXT_FONT,
-        visual = ColorVisual(255, 55, 55, 0.5)
+        visual = RED_BTN_VISUAL
     )
 
     val titleLabel = Label(

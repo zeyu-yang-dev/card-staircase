@@ -29,7 +29,6 @@ class ResultMenuScene(
         posY = RMS_LIST_POS_Y,
         items = emptyList(),
         font = RMS_LIST_FONT,
-        // alignment = Alignment.TOP_CENTER,
         visual = RMS_LIST_BG_VISUAL,
         orientation = Orientation.VERTICAL
     )
@@ -41,12 +40,9 @@ class ResultMenuScene(
         posY = RMS_LIST_POS_Y,
         items = emptyList(),
         font = RMS_LIST_FONT,
-        // alignment = Alignment.TOP_CENTER,
         visual = RMS_LIST_BG_VISUAL,
         orientation = Orientation.VERTICAL
     )
-
-
 
     val replayButton = Button(
         width = RMS_BTN_WIDTH,
@@ -54,9 +50,8 @@ class ResultMenuScene(
         posX = RMS_REPLAY_BTN_POS_X,
         posY = RMS_BTN_POS_Y,
         text = "REPLAY",
-        font = Font(size = 24, color = Color.WHITE,
-            fontWeight = Font.FontWeight.SEMI_BOLD, fontStyle = Font.FontStyle.NORMAL),
-        visual = ColorVisual(55, 255, 55, 0.5)
+        font = RMS_BTN_FONT,
+        visual = GREEN_BTN_VISUAL
     )
 
     val exitButton = Button(
@@ -65,9 +60,25 @@ class ResultMenuScene(
         posX = RMS_EXIT_BTN_POS_X,
         posY = RMS_BTN_POS_Y,
         text = "EXIT",
-        font = Font(size = 24, color = Color.WHITE,
-            fontWeight = Font.FontWeight.SEMI_BOLD, fontStyle = Font.FontStyle.NORMAL),
-        visual = ColorVisual(255, 55, 55, 0.5)
+        font = RMS_BTN_FONT,
+        visual = RED_BTN_VISUAL
+    )
+
+    val winnerName = Label(
+        width = WINNER_NAME_WIDTH,
+        height = WINNER_NAME_HEIGHT,
+        posX = WINNER_NAME_POS_X,
+        posY = WINNER_NAME_POS_Y,
+        font = RMS_BTN_FONT,
+        visual = RMS_LIST_BG_VISUAL
+    )
+
+    val winnerTitle = Label(
+        width = WINNER_TITLE_WIDTH,
+        height = WINNER_TITLE_HEIGHT,
+        posX = WINNER_TITLE_POS_X,
+        posY = WINNER_TITLE_POS_Y,
+        visual = RMS_LIST_BG_VISUAL
     )
 
 
@@ -78,10 +89,10 @@ class ResultMenuScene(
 
 
 
-    private fun refreshScoreBoard(indexOfWinner: Int = 0) {
-        val currentGame = rootService.currentGame
-        val winner = currentGame.players[indexOfWinner]
-        val loser = currentGame.players[(indexOfWinner + 1) % 2]
+    private fun refreshScoreBoard() {
+        val players = rootService.currentGame.players
+        val winner = players.maxBy { it.score }
+        val loser = players.minBy { it.score }
 
         nameList.items.setAll(
             listOf(
@@ -98,6 +109,8 @@ class ResultMenuScene(
                 loser.score.toString()
             )
         )
+
+        winnerName.text = winner.name
     }
 
 
@@ -112,6 +125,8 @@ class ResultMenuScene(
             scoreList,
             replayButton,
             exitButton,
+            winnerName,
+            winnerTitle,
 
         )
 
@@ -122,14 +137,7 @@ class ResultMenuScene(
 
 
     override fun refreshAfterEndGame() {
-        val currentGame = rootService.currentGame
-
-        if (currentGame.players[0].score >= currentGame.players[1].score) {
-            refreshScoreBoard(0)
-        }
-        else {
-            refreshScoreBoard(1)
-        }
+        refreshScoreBoard()
     }
 
 
