@@ -8,6 +8,8 @@ const val SCREEN_WIDTH = 1920
 const val SCREEN_HEIGHT = 1080
 
 // MainMenuScene:
+val GREEN_BTN_VISUAL = ColorVisual(55, 255, 55, 0.5)
+val RED_BTN_VISUAL = ColorVisual(255, 55, 55, 0.5)
 const val TEXT_FIELD_WIDTH = 300
 const val TEXT_FIELD_HEIGHT = 75
 const val TEXT_FIELD_POS_X = (SCREEN_WIDTH - TEXT_FIELD_WIDTH) / 2
@@ -31,7 +33,7 @@ const val MMS_TITLE_POS_Y = 230
 // PanePlayer, common properties:
 const val DELAY_FOR_FLICKER_REMOVAL = 10
 const val FLIP_ANIMATION_DURATION = 600
-val PANE_BG_VISUAL = ColorVisual(255, 55, 55, 0.3)
+val PANE_BG_VISUAL = ColorVisual.TRANSPARENT
 const val CARDS_CALE = 0.75
 const val CARD_WIDTH = 130 * CARDS_CALE
 const val CARD_HEIGHT = 200 * CARDS_CALE
@@ -102,13 +104,6 @@ const val GAME_LOG_HEIGHT = BUTTON_HEIGHT * GAME_LOG_SCALE
 const val GAME_LOG_POS_X = PPR_POS_X + (CARD_WIDTH * 5 + DIS_BET_CARDS * 4 - GAME_LOG_WIDTH) / 2 - STACKS_POS_X
 const val GAME_LOG_POS_Y = 0
 
-val GAME_LOG_LABEL_FONT = Font(
-    size = 24,
-    color = Color.WHITE,
-    fontWeight = Font.FontWeight.SEMI_BOLD,
-    fontStyle = Font.FontStyle.ITALIC
-)
-
 val GAME_LOG_LIST_FONT = Font(
     size = 16,
     color = Color.WHITE,
@@ -117,18 +112,57 @@ val GAME_LOG_LIST_FONT = Font(
 )
 
 // ResultMenuScene:
-const val WINNER_LABLE_WIDTH = 300
-const val WINNER_LABLE_HEIGHT = 600
-const val WINNER_LABEL_POS_X = (1920 - WINNER_LABLE_WIDTH * 2) / 3
-const val WINNER_LABEL_POS_Y = 300
+const val RMS_WIDTH = 600
+const val RMS_HEIGHT = RMS_WIDTH
+const val RMS_MIDDLE_LINE = RMS_HEIGHT / 2
+const val RMS_DIS_TO_MIDDLE_LINE = 20
 
-const val VIC_BUTTON_HEIGHT = 100
-const val VIC_BUTTON_POS_Y = (1080 - WINNER_LABLE_HEIGHT - WINNER_LABEL_POS_Y - VIC_BUTTON_HEIGHT) / 2 + WINNER_LABLE_HEIGHT + WINNER_LABEL_POS_Y
+const val RMS_LIST_WIDTH = RMS_WIDTH * 0.2
+const val RMS_LIST_HEIGHT = 100
+val RMS_LIST_BG_VISUAL = ColorVisual.TRANSPARENT
+val RMS_LIST_FONT = Font(
+    size = 18,
+    color = Color.WHITE,
+    fontWeight = Font.FontWeight.SEMI_BOLD,
+    fontStyle = Font.FontStyle.NORMAL
+)
 
-const val LOSER_LABEL_POS_X = WINNER_LABEL_POS_X * 2 + WINNER_LABLE_WIDTH
+const val RMS_LIST_HORIZ_SPACER = 20
+const val RMS_NAME_LIST_POS_X = (RMS_WIDTH - RMS_LIST_WIDTH * 2 - RMS_LIST_HORIZ_SPACER) / 2
+const val RMS_SCORE_LIST_POS_X = RMS_NAME_LIST_POS_X + RMS_LIST_WIDTH + RMS_LIST_HORIZ_SPACER
+const val RMS_LIST_POS_Y = RMS_MIDDLE_LINE + RMS_DIS_TO_MIDDLE_LINE
 
+const val RMS_BTN_WIDTH = RMS_LIST_WIDTH
+const val RMS_BTN_HEIGHT = RMS_LIST_HEIGHT / 3
+const val RMS_REPLAY_BTN_POS_X = RMS_NAME_LIST_POS_X
+const val RMS_EXIT_BTN_POS_X = RMS_SCORE_LIST_POS_X
+const val RMS_BTN_POS_Y = RMS_LIST_POS_Y + RMS_LIST_HEIGHT + 30
+val RMS_BTN_FONT = Font(
+    size = 18,
+    color = Color.WHITE,
+    fontWeight = Font.FontWeight.SEMI_BOLD,
+    fontStyle = Font.FontStyle.NORMAL
+)
+val WINNER_NAME_FONT = Font(
+    size = 26,
+    color = Color.WHITE,
+    fontWeight = Font.FontWeight.SEMI_BOLD,
+    fontStyle = Font.FontStyle.NORMAL
+)
+const val WINNER_NAME_WIDTH = RMS_WIDTH * 0.25
+const val WINNER_NAME_HEIGHT = WINNER_NAME_WIDTH / 4
+const val WINNER_NAME_POS_X = (RMS_WIDTH - WINNER_NAME_WIDTH) / 2
+const val WINNER_NAME_POS_Y = RMS_MIDDLE_LINE - RMS_DIS_TO_MIDDLE_LINE - WINNER_NAME_HEIGHT
 
+const val WINNER_TITLE_WIDTH = RMS_WIDTH * 0.4
+const val WINNER_TITLE_HEIGHT = WINNER_TITLE_WIDTH / 3
+const val WINNER_TITLE_POS_X = (RMS_WIDTH - WINNER_TITLE_WIDTH) / 2 + WINNER_TITLE_WIDTH * 0.025
+const val WINNER_TITLE_POS_Y = WINNER_NAME_POS_Y - WINNER_TITLE_HEIGHT + WINNER_TITLE_WIDTH * 0.025
 
+const val GAME_END_LABEL_WIDTH = RMS_WIDTH * 0.6
+const val GAME_END_LABEL_HEIGHT = GAME_END_LABEL_WIDTH / 4
+const val GAME_END_LABEL_POS_X = (RMS_WIDTH - GAME_END_LABEL_WIDTH) / 2
+const val GAME_END_LABEL_POS_Y = WINNER_TITLE_POS_Y - GAME_END_LABEL_HEIGHT - 20
 
 
 

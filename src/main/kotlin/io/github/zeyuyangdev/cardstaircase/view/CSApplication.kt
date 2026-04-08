@@ -2,7 +2,6 @@ package io.github.zeyuyangdev.cardstaircase.view
 
 import io.github.zeyuyangdev.cardstaircase.service.RootService
 import io.github.zeyuyangdev.cardstaircase.service.Refreshable
-import tools.aqua.bgw.animation.DelayAnimation
 
 import tools.aqua.bgw.event.KeyCode
 import tools.aqua.bgw.core.BoardGameApplication
@@ -70,6 +69,14 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
 
 
         showMenuScene(mainMenuScene)
+
+        // temp button to show ResultMenuScene:
+        gameScene.tempButton.apply {
+            onMouseClicked = {
+                rootService.gameService.endGame()
+                showMenuScene(resultMenuScene)
+            }
+        }
     }
 
     override fun refreshAfterStartNewGame() {

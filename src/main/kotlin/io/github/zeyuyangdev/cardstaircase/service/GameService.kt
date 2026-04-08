@@ -10,13 +10,13 @@ class GameService(private val rootService: RootService): AbstractRefreshingServi
         require (player1 != "" && player2 != "") {"Player name can't be null."}
         require (player1 != player2) {"Players can't have identical names."}
 
-        // 取消以随机顺序开始, 改为交替先手，实现在KartentreppeApplication中
+        // 取消以随机顺序开始, 改为交替先手，实现在CSApplication中
         val shuffled = listOf(player1, player2) // .shuffled()
         val player_01 = Player(shuffled[0])
         val player_02 = Player(shuffled[1])
 
-        // Create a new instance of Game class
-        rootService.currentGame = Game(players = listOf(player_01, player_02))
+        // Create a new instance of CardStaircase class
+        rootService.currentGame = CardStaircase(players = listOf(player_01, player_02))
         val currentGame = rootService.currentGame
 
         // Create a new draw Stack

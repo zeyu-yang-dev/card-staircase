@@ -13,7 +13,7 @@ class RootService {
     val gameService = GameService(this)
     val playerActionService = PlayerActionService(this)
 
-    lateinit var currentGame: Game
+    lateinit var currentGame: CardStaircase
 
 
 

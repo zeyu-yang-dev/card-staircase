@@ -69,7 +69,7 @@ class PaneStacks(
         items = emptyList(),
         font = GAME_LOG_LIST_FONT,
         visual = ColorVisual(55, 55, 55, 0.5),
-        orientation = Orientation.VERTICAL,
+        orientation = Orientation.VERTICAL
     ).apply {
         this.isVisible = false
     }
@@ -146,12 +146,4 @@ class PaneStacks(
     override fun refreshAfterEndTurn() = refreshThisPane()
     override fun refreshAfterShuffleStack() = refreshThisPane()
     override fun refreshAfterEndGame() = refreshThisPane()
-
-
-
-
-
-
-
-
 }
