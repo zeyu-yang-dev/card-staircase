@@ -146,12 +146,4 @@ class PaneStacks(
     override fun refreshAfterEndTurn() = refreshThisPane()
     override fun refreshAfterShuffleStack() = refreshThisPane()
     override fun refreshAfterEndGame() = refreshThisPane()
-
-
-
-
-
-
-
-
 }

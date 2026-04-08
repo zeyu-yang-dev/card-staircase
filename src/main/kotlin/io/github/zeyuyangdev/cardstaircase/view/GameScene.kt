@@ -7,6 +7,8 @@ import io.github.zeyuyangdev.cardstaircase.view.panes.*
 
 import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.visual.ImageVisual
+import tools.aqua.bgw.components.uicomponents.Button
+import tools.aqua.bgw.visual.ColorVisual
 
 class GameScene(
     private val rootService: RootService
@@ -15,9 +17,8 @@ class GameScene(
     SCREEN_HEIGHT
 ), Refreshable {
 
-
     /**
-     * Represents the state of a turn, mainly for UI.
+     * Represents the state of a turn.
      */
     enum class UIState {
         TURN_READY_START,
@@ -58,13 +59,26 @@ class GameScene(
 
     val paneStacks = PaneStacks(rootService)
 
+    // temp button to show ResultMenuScene:
+    val tempButton = Button(
+        width = PLAYER_LABEL_WIDTH,
+        height = 100,
+        posX = PLAYER_LABEL_POS_X + PPL_POS_X,
+        posY = 300,
+        text = "SHOW RESUALT MENU SCENE",
+        visual = ColorVisual.CYAN
+    )
+
     init {
         this.background = ImageVisual("game_background.png")
 
-        addComponents(panePlayerLeft)
-        addComponents(panePlayerRight)
-        addComponents(paneStairs)
-        addComponents(paneStacks)
+        addComponents(
+            panePlayerLeft,
+            panePlayerRight,
+            paneStairs,
+            paneStacks,
+            tempButton
+        )
     }
 
     override fun refreshAfterStartNewGame() {
