@@ -109,6 +109,13 @@ val GAME_LOG_LABEL_FONT = Font(
     fontStyle = Font.FontStyle.ITALIC
 )
 
+val GAME_LOG_LIST_FONT = Font(
+    size = 16,
+    color = Color.WHITE,
+    fontWeight = Font.FontWeight.NORMAL,
+    fontStyle = Font.FontStyle.NORMAL
+)
+
 // ResultMenuScene:
 const val WINNER_LABLE_WIDTH = 300
 const val WINNER_LABLE_HEIGHT = 600

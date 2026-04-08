@@ -71,7 +71,7 @@ class MainMenuScene(
         height = MMS_TITLE_HEIGHT,
         posX = MMS_TITLE_POS_X,
         posY = MMS_TITLE_POS_Y,
-        visual = ImageVisual("game_title_03.png")
+        visual = ImageVisual("game_title.png")
     )
 
     init {
