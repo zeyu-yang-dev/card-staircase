@@ -79,6 +79,15 @@ class ResultMenuScene(
         visual = ImageVisual("winner_title.png")
     )
 
+    val gameEndLabel = Label(
+        width = GAME_END_LABEL_WIDTH,
+        height = GAME_END_LABEL_HEIGHT,
+        posX = GAME_END_LABEL_POS_X,
+        posY = GAME_END_LABEL_POS_Y,
+        visual = ImageVisual("game_end_label.png")
+
+    )
+
     init {
         this.background = ImageVisual("end_background.png")
 
@@ -88,7 +97,8 @@ class ResultMenuScene(
             replayButton,
             exitButton,
             winnerName,
-            winnerTitle
+            winnerTitle,
+            gameEndLabel
         )
     }
 
@@ -121,8 +131,6 @@ class ResultMenuScene(
         // refreshes name of the winner
         winnerName.text = winner.name
     }
-
-
 
     override fun refreshAfterEndGame() {
         refreshScoreBoard()
