@@ -7,22 +7,22 @@ class GameService(private val rootService: RootService): AbstractRefreshingServi
 
     fun startNewGame(player1: String, player2: String) {
 
-        require (player1 != "" && player2 != "") {"Player name can't be null."}
+        require (player1 != "" && player2 != "") {"Player names can't be empty."}
         require (player1 != player2) {"Players can't have identical names."}
 
-        // 取消以随机顺序开始, 改为交替先手，实现在CSApplication中
+        // (uncomment below to activate random player order)
         val shuffled = listOf(player1, player2) // .shuffled()
         val player_01 = Player(shuffled[0])
         val player_02 = Player(shuffled[1])
 
-        // Create a new instance of CardStaircase class
+        // Creates an instance of [CardStaircase] representing the current round of game.
         rootService.currentGame = CardStaircase(players = listOf(player_01, player_02))
         val currentGame = rootService.currentGame
 
-        // Create a new draw Stack
+        // Creates a new draw Stack of 52 cards.
         val drawStack = createDrawStack()
 
-        // Fill in the stairs
+        // Fills in the stairs.
         val stairs = currentGame.stairs
         var heightOfStair = 5
         for (i in stairs.indices) {
@@ -32,21 +32,23 @@ class GameService(private val rootService: RootService): AbstractRefreshingServi
             heightOfStair -= 1
         }
 
-        // Give each player 5 hand cards
+        // Gives each player 5 hand cards.
         for (player in currentGame.players) {
             repeat(5) {
                 player.hand.add(drawStack.pop())
             }
         }
 
-        // The rest cards go to the draw stack
+        // The rest cards go to the draw stack.
         currentGame.drawStack = drawStack
-
 
         onAllRefreshables { refreshAfterStartNewGame() }
     }
 
-    // Called in endTurn()
+    /**
+     * Shuffles the discard stack and move the cards to draw stack.
+     * Called in endTurn()
+     */
     fun shuffleStack() {
         val currentGame = rootService.currentGame
         require (currentGame.drawStack.isEmpty() && currentGame.discardStack.isNotEmpty()) {"Can't shuffle now."}
@@ -60,11 +62,10 @@ class GameService(private val rootService: RootService): AbstractRefreshingServi
         onAllRefreshables { refreshAfterShuffleStack() }
     }
 
-    // Called in endTurn() AND in destroyCard() AND playCard()
+    // Called in endTurn() AND in destroyCard() AND in playCard()
     fun endGame() {
         onAllRefreshables { refreshAfterEndGame() }
     }
-
 
     /**
      * Creates a full stack of 52 cards.
@@ -81,55 +82,6 @@ class GameService(private val rootService: RootService): AbstractRefreshingServi
         }
 
         drawStack.shuffle()
-
-        // // 为了测试洗切和相关的结束条件
-        // // 这样就只有两张牌了
-        // repeat(25) {
-        //     drawStack.pop()
-        // }
-
         return drawStack
     }
-
-    //------------------------------------------------------------------------------------------------------------------
-
-    private fun findCardInStack(valueNeeded: CardValue): Int {
-        val currentGame = rootService.currentGame
-        return currentGame.drawStack.indexOfFirst { it.value ==  valueNeeded }
-    }
-
-    private fun swapToTop(indexOfCard: Int) {
-        val currentGame = rootService.currentGame
-        requireNotNull(currentGame) {"Current game not available!"}
-        val drawStack = currentGame.drawStack
-
-        val cardNeeded = drawStack[indexOfCard]
-        val cardOnTop = drawStack.peek()
-
-        drawStack[indexOfCard] = cardOnTop
-        drawStack[drawStack.size - 1] = cardNeeded
-    }
-
-    fun shuffleDrawStack(option: Boolean) {
-
-        val candidates = if (option) {
-            listOf(CardValue.KING, CardValue.QUEEN, CardValue.TEN).shuffled()
-        } else {
-            listOf(CardValue.ACE, CardValue.TWO, CardValue.THREE, CardValue.FOUR).shuffled()
-        }
-
-        for (value in candidates) {
-            val index = findCardInStack(value)
-            if (index != -1) {
-                swapToTop(index)
-                return
-            }
-        }
-    }
-
-
-
-
-
-
 }

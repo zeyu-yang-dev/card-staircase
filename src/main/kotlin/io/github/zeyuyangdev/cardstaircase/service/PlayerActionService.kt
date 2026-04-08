@@ -112,9 +112,7 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
 
     // 对应UI上的start按键
     fun startTurn() {
-
         onAllRefreshables { refreshAfterStartTurn() }
-
     }
 
     fun endTurn() {
@@ -123,8 +121,9 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
         val currentPlayer = rootService.currentGame.players[currentPlayerIndex]
 
 
+        // TODO: 检查判断条件
         // 为了防止drawStack和discardStack同时为空，需要直接强制结束游戏
-        if (currentGame.drawStack.isEmpty()) {
+        if (currentGame.drawStack.isEmpty() && currentGame.discardStack.isEmpty()) {
             rootService.gameService.endGame()
             println("CardStaircase ended in condition 2.")
             return
