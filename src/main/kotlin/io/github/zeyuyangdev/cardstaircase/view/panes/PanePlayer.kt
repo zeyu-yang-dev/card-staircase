@@ -134,10 +134,12 @@ abstract class PanePlayer(
                 onMouseClicked = {
 
                     if (gameScene.state in setOf(UIState.TURN_STARTED, UIState.HAS_DESTROYED, UIState.HAS_SELECTED)) {
-                        val handCards = rootService.currentGame.players[playerOfThisPane].hand
-                        gameScene.cardSelected = handCards[i]
-                        gameScene.state = UIState.HAS_SELECTED
-                        moveIndicator(i)
+                        if (rootService.currentGame.currentPlayer == playerOfThisPane) {
+                            val handCards = rootService.currentGame.players[playerOfThisPane].hand
+                            gameScene.cardSelected = handCards[i]
+                            gameScene.state = UIState.HAS_SELECTED
+                            moveIndicator(i)
+                        }
                     }
                     refreshButton()
                 }

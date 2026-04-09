@@ -31,7 +31,8 @@ class CardImageLoader {
     /**
      * Provides the back side image of the card deck
      */
-    val backImage: ImageVisual get() = getImageByCoordinates(2, 4)
+    // val backImage: ImageVisual get() = getImageByCoordinates(2, 4)
+    val backImage: ImageVisual get() = ImageVisual("card_back.png")
 
     /**
      * Provides the card image for the given [CardSuit] and [CardValue]
