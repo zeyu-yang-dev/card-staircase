@@ -67,7 +67,9 @@ class GameScene(
         posY = 300,
         text = "SHOW RESUALT MENU SCENE",
         visual = ColorVisual.CYAN
-    )
+    ).apply {
+        isVisible = false
+    }
 
     init {
         this.background = ImageVisual("game_background.png")
