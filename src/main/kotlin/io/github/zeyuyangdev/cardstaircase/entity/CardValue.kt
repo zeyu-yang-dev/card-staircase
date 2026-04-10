@@ -45,6 +45,9 @@ enum class CardValue {
             ACE -> "A"
         }
 
+    /**
+     * Returns the score of each card value.
+     */
     fun toInt() =
         when(this) {
             TWO -> 2

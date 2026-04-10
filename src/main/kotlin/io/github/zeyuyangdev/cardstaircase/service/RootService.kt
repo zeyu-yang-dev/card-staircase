@@ -15,11 +15,9 @@ class RootService {
 
     lateinit var currentGame: CardStaircase
 
-
-
     /**
-     * Adds the provided [newRefreshable] to all services connected
-     * to this root service
+     * Adds the provided [newRefreshable] to all services
+     * connected to this root service.
      */
     private fun addRefreshable(newRefreshable: Refreshable) {
         gameService.addRefreshable(newRefreshable)
@@ -28,15 +26,9 @@ class RootService {
 
     /**
      * Adds each of the provided [newRefreshables] to all services
-     * connected to this root service
+     * connected to this root service.
      */
     fun addRefreshables(vararg newRefreshables: Refreshable) {
         newRefreshables.forEach { addRefreshable(it) }
     }
-
-
-
-
-
-
 }

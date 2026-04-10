@@ -1,9 +1,9 @@
 package io.github.zeyuyangdev.cardstaircase.service
 
 /**
- * Abstract service class that handles multiples [Refreshable]s (usually UI elements, such as
- * specialized [tools.aqua.bgw.core.BoardGameScene] classes/instances) which are notified
- * of changes to refresh via the [onAllRefreshables] method.
+ * Abstract service class that manages multiple [Refreshable] instances,
+ * (usually UI elements, such as specialized [tools.aqua.bgw.core.BoardGameScene] classes/instances)
+ * which are notified of changes to refresh via the [onAllRefreshables] method.
  */
 abstract class AbstractRefreshingService {
 
@@ -19,11 +19,10 @@ abstract class AbstractRefreshingService {
     }
 
     /**
-     * Adds each of the provided [Refreshable]s to the list of refreshables.
-     *
-     * @param method The [Refreshable]s to be added
+     * Executes the passed method (usually a lambda) on all
+     * [Refreshable]s registered with the service class that
+     * extends this [AbstractRefreshingService]
      */
     fun onAllRefreshables(method: Refreshable.() -> Unit) =
         refreshables.forEach { it.method() }
-
 }

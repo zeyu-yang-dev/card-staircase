@@ -14,5 +14,4 @@ class PanePlayerRight(
     PP_POS_Y,
     PP_WIDTH,
     PP_HEIGHT
-) {
-}
+) {}

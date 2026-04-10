@@ -1,7 +1,7 @@
 package io.github.zeyuyangdev.cardstaircase.entity
 
 /**
- * Represents a single playing card.
+ * Represents a single card.
  * It is characterized by a [CardSuit] and a [CardValue].
  *
  * @property suit  the suit of the card (♣/♠/♥/♦)
@@ -11,7 +11,7 @@ data class Card(
     val suit: CardSuit,
     val value: CardValue
 ) {
-    /** Compact label like "♥A". */
+    // Compact label like "♥A".
     override fun toString(): String = "$suit$value"
 
 }
