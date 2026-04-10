@@ -3,9 +3,7 @@ package io.github.zeyuyangdev.cardstaircase.view
 import io.github.zeyuyangdev.cardstaircase.service.RootService
 import io.github.zeyuyangdev.cardstaircase.service.Refreshable
 
-import tools.aqua.bgw.event.KeyCode
 import tools.aqua.bgw.core.BoardGameApplication
-
 
 /**
  * Represents the main application.
@@ -25,14 +23,11 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
 
     private val resultMenuScene = ResultMenuScene(rootService).apply {
         replayButton.onMouseClicked = {
+            // Changes the player order before starts a new game.
             val player1Name = rootService.currentGame.players[1].name
             val player2Name = rootService.currentGame.players[0].name
 
             rootService.gameService.startNewGame(player1Name, player2Name)
-
-            hideMenuScene()
-            showGameScene(gameScene)
-
         }
 
         exitButton.onMouseClicked = {
@@ -48,6 +43,7 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
 
     init {
 
+        // Adds the following refreshables to all services connected to rootService.
         rootService.addRefreshables(
             this,
             gameScene,
@@ -59,7 +55,7 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
             mainMenuScene
         )
 
-
+        // Shows the main menu scene upon application start.
         showMenuScene(mainMenuScene)
 
         // temp button to show ResultMenuScene:
@@ -72,15 +68,12 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
     }
 
     override fun refreshAfterStartNewGame() {
-
         hideMenuScene()
         showGameScene(gameScene)
-
     }
 
     override fun refreshAfterEndGame() {
         showMenuScene(resultMenuScene)
     }
-
 }
 

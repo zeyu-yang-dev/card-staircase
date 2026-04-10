@@ -48,7 +48,7 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
      * @param card The card in hand.
      * @param target The card in the staircase.
      */
-    fun playCard(card: Card, target: Card) {
+    fun matchCard(card: Card, target: Card) {
 
         require(card.value == target.value || card.suit == target.suit) {"The two cards must match."}
 

@@ -30,6 +30,71 @@ class PaneStairs(
     // A mask that marks the clickable CardViews in the stairs
     private val stairsMask: List<MutableList<Boolean>> = listOf(5, 4, 3, 2, 1).map { MutableList(it) { false } }
 
+    // Each column of cardViews is stored in a list.
+    val cardViewsCol_1: MutableList<CardView> = mutableListOf()
+    val cardViewsCol_2: MutableList<CardView> = mutableListOf()
+    val cardViewsCol_3: MutableList<CardView> = mutableListOf()
+    val cardViewsCol_4: MutableList<CardView> = mutableListOf()
+    val cardViewsCol_5: MutableList<CardView> = mutableListOf()
+
+    val stairCardViews = listOf(cardViewsCol_1, cardViewsCol_2, cardViewsCol_3, cardViewsCol_4, cardViewsCol_5)
+
+    init {
+
+        // Creates CardViews for a full staircase:
+        var numOfCardsInCol = 5
+        for (col in stairCardViews.indices) {
+            // row from bottom to top
+            for (row in 0 until numOfCardsInCol) {
+                stairCardViews[col].add(createCardView(col, row))
+            }
+            numOfCardsInCol -= 1
+        }
+
+        // Defines the behavior of each cardView upon click:
+        numOfCardsInCol = 5
+        for (col in stairCardViews.indices) {
+            for (row in 0 until numOfCardsInCol) {
+                stairCardViews[col][row].apply {
+                    onMouseClicked = {
+                        // If this cardView is clickable:
+                        if (stairsMask[col][row]) {
+                            val currentPlayerIndex = rootService.currentGame.currentPlayer
+                            val currentPlayer = rootService.currentGame.players[currentPlayerIndex]
+
+                            // 1. When a turn is just started: Destroy action
+                            if (gameScene.state == UIState.TURN_STARTED && currentPlayer.score >= 5) {
+                                val stairs = rootService.currentGame.stairs
+                                // Changes UI state before the refresh.
+                                gameScene.state = UIState.HAS_DESTROYED
+                                playerActionService.destroyCard(stairs[col][row])
+                            }
+
+                            // 2. When a card is selected from hand: Match action
+                            if (gameScene.state == UIState.HAS_SELECTED) {
+                                // Checks whether the two cards match.
+                                val stairs = rootService.currentGame.stairs
+                                if (gameScene.cardSelected!!.value == stairs[col][row].value ||
+                                    gameScene.cardSelected!!.suit == stairs[col][row].suit) {
+                                    // Changes UI state before the refresh.
+                                    gameScene.state = UIState.HAS_PLAYED
+                                    playerActionService.matchCard(gameScene.cardSelected!!, stairs[col][row])
+                                    // Resets the selected hand card.
+                                    gameScene.cardSelected = null
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            numOfCardsInCol -= 1
+        }
+
+        // Adds all cardViews to this pane.
+        for (i in stairCardViews.indices) {
+            addAll(stairCardViews[i])
+        }
+    }
 
     /**
      * Creates a Cardview for this pane.
@@ -50,21 +115,15 @@ class PaneStairs(
         return cardView
     }
 
-    val cardViewsCol_1: MutableList<CardView> = mutableListOf()
-    val cardViewsCol_2: MutableList<CardView> = mutableListOf()
-    val cardViewsCol_3: MutableList<CardView> = mutableListOf()
-    val cardViewsCol_4: MutableList<CardView> = mutableListOf()
-    val cardViewsCol_5: MutableList<CardView> = mutableListOf()
-
-    val stairCardViews = listOf(cardViewsCol_1, cardViewsCol_2, cardViewsCol_3, cardViewsCol_4, cardViewsCol_5)
-
-    // 刷新 卡牌内容 + CardView可见性
+    /**
+     * Refreshes the visual and visibility for each [CardView].
+     */
     private fun refreshCardContent() {
         val stairs = rootService.currentGame.stairs
 
-        // 逐个设置 卡牌内容 + 可见性
+        // Sets visual and visibility for each cardView.
         for (col_index in stairCardViews.indices) {
-            // 如果stairs中的这一个Stack里有卡，则这一列CardView可见
+            // If this stack in stairs is not empty:
             if (stairs[col_index].isNotEmpty()) {
                 for (row_index in stairCardViews[col_index].indices) {
                     if (row_index in 0 until stairs[col_index].size) {
@@ -78,21 +137,24 @@ class PaneStairs(
                     }
                 }
             }
-            // 否则这一列都不可见
+            // If this stack in stairs is empty:
             else {
                 for (cardView in stairCardViews[col_index]) {
                     cardView.isVisible = false
                 }
-
             }
         }
     }
 
-    // 刷新 卡牌是否翻开 + 是否可点击，注意翻开的卡牌同时是可点击的卡牌
+    /**
+     * Refreshes for each cardView:
+     * if this cardView show a card front and
+     * if this cardView is clickable.
+     */
     private fun refreshCardSide() {
         val stairs = rootService.currentGame.stairs
 
-        // 将所有CardView设置为背面
+        // Sets all cardViews to show card back.
         for (col_index in stairCardViews.indices) {
             for (row_index in stairCardViews[col_index].indices) {
                 stairCardViews[col_index][row_index].apply {
@@ -101,134 +163,36 @@ class PaneStairs(
             }
         }
 
-        // 将mask中的所有值设置为false
+        // Sets all cardView to be unclickable.
         for (column in stairsMask) {
             for (row_index in column.indices) {
                 column[row_index] = false
             }
         }
 
-        // 将对应stairs中栈顶的那些CardView设置为正面
+        /**
+         * Sets the cardView, which represents a [Card] on top of a stack in [CardStaircase.stairs]
+         * to show the front visual corresponding to this [Card] and
+         * to be clickable.
+         */
         for (col_index in stairs.indices) {
             if (stairs[col_index].isNotEmpty()) {
                 stairCardViews[col_index][stairs[col_index].size - 1].showFront()
-            }
-        }
-
-        // 将对应stairs中栈顶的那些CardView的mask值设置为true
-        for (col_index in stairs.indices) {
-            if (stairs[col_index].isNotEmpty()) {
                 stairsMask[col_index][stairs[col_index].size - 1] = true
             }
         }
-
     }
 
-
-
-
-
-    init {
-
-        // Add CardViews for a FULL stair
-        var numOfCardsInCol = 5
-        for (col in stairCardViews.indices) {
-            // row from bottom to top
-            for (row in 0 until numOfCardsInCol) {
-                stairCardViews[col].add(createCardView(col, row))
-            }
-            numOfCardsInCol -= 1
-        }
-
-        // 定义每个CardView被点击时的功能
-        numOfCardsInCol = 5
-        for (col in stairCardViews.indices) {
-            for (row in 0 until numOfCardsInCol) {
-                stairCardViews[col][row].apply {
-                    onMouseClicked = {
-                        if (stairsMask[col][row]) {
-
-                            val currentPlayerIndex = rootService.currentGame.currentPlayer
-                            val currentPlayer = rootService.currentGame.players[currentPlayerIndex]
-
-                            // DESTROY
-                            if (gameScene.state == UIState.TURN_STARTED && currentPlayer.score >= 5) {
-                                val stairs = rootService.currentGame.stairs
-                                playerActionService.destroyCard(stairs[col][row])
-                                gameScene.state = UIState.HAS_DESTROYED
-                            }
-
-                            // 当已经选择了一张手牌
-                            if (gameScene.state == UIState.HAS_SELECTED) {
-                                // 检查从手牌中选择的牌和阶梯中选择的牌是否匹配
-                                val stairs = rootService.currentGame.stairs
-                                if (gameScene.cardSelected!!.value == stairs[col][row].value || gameScene.cardSelected!!.suit == stairs[col][row].suit) {
-
-                                    // 牌序很重要，需要先改state再刷新
-                                    gameScene.state = UIState.HAS_PLAYED
-                                    playerActionService.playCard(gameScene.cardSelected!!, stairs[col][row])
-
-                                    gameScene.cardSelected = null
-                                }
-
-
-                            }
-
-                        }
-                    }
-                }
-            }
-            numOfCardsInCol -= 1
-        }
-
-
-
-        for (i in stairCardViews.indices) {
-            addAll(stairCardViews[i])
-        }
-
-
-
-    }
-
-
-    override fun refreshAfterStartNewGame() {
+    private fun refreshThisPane() {
         refreshCardContent()
         refreshCardSide()
     }
 
-    override fun refreshAfterStartTurn() {
-        refreshCardContent()
-        refreshCardSide()
-    }
-
-    override fun refreshAfterDestroyCard() {
-        refreshCardContent()
-        refreshCardSide()
-    }
-
-    override fun refreshAfterPlayCard() {
-        refreshCardContent()
-        refreshCardSide()
-    }
-
-
-    override fun refreshAfterDiscardCard() {
-        refreshCardContent()
-        refreshCardSide()
-    }
-
-    override fun refreshAfterEndTurn() {
-        refreshCardContent()
-        refreshCardSide()
-    }
-
-    override fun refreshAfterEndGame() {
-        refreshCardContent()
-        refreshCardSide()
-    }
-
-
-
-
+    override fun refreshAfterStartNewGame() = refreshThisPane()
+    override fun refreshAfterStartTurn() = refreshThisPane()
+    override fun refreshAfterDestroyCard() = refreshThisPane()
+    override fun refreshAfterPlayCard() = refreshThisPane()
+    override fun refreshAfterDiscardCard() = refreshThisPane()
+    override fun refreshAfterEndTurn() = refreshThisPane()
+    override fun refreshAfterEndGame() = refreshThisPane()
 }

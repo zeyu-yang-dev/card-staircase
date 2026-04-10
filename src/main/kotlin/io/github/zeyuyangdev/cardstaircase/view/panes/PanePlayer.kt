@@ -10,7 +10,6 @@ import tools.aqua.bgw.components.ComponentView
 import tools.aqua.bgw.components.layoutviews.Pane
 import tools.aqua.bgw.animation.FlipAnimation
 import tools.aqua.bgw.components.gamecomponentviews.CardView
-import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.Alignment
@@ -343,7 +342,7 @@ abstract class PanePlayer(
         playerLabel2.text = "PLAYER: $playerName"
     }
 
-    protected fun refreshPaneComponents() {
+    protected fun refreshThisPane() {
         refreshCardContent()
         refreshCardSide()
         refreshButton()
@@ -368,22 +367,22 @@ abstract class PanePlayer(
     //------------------------------------------------------------------------------------------------------------------
     override fun refreshAfterStartNewGame() {
         cardsRevealed = false
+        refreshThisPane()
         hideIndicator()
-        refreshPaneComponents()
     }
 
     override fun refreshAfterPlayCard() {
-        refreshPaneComponents()
+        refreshThisPane()
         hideIndicator()
     }
 
     override fun refreshAfterDiscardCard() {
-        refreshPaneComponents()
+        refreshThisPane()
         hideIndicator()
     }
 
     override fun refreshAfterStartTurn() {}
-    override fun refreshAfterDestroyCard() = refreshPaneComponents()
-    override fun refreshAfterEndTurn() = refreshPaneComponents()
-    override fun refreshAfterEndGame() = refreshPaneComponents()
+    override fun refreshAfterDestroyCard() = refreshThisPane()
+    override fun refreshAfterEndTurn() = refreshThisPane()
+    override fun refreshAfterEndGame() = refreshThisPane()
 }

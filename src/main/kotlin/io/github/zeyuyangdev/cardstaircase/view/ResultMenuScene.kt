@@ -103,7 +103,7 @@ class ResultMenuScene(
     }
 
     /**
-     * Refreshes every variable component.
+     * Refreshes every changeable component.
      */
     private fun refreshScoreBoard() {
         val players = rootService.currentGame.players
@@ -132,7 +132,5 @@ class ResultMenuScene(
         winnerName.text = winner.name
     }
 
-    override fun refreshAfterEndGame() {
-        refreshScoreBoard()
-    }
+    override fun refreshAfterEndGame() = refreshScoreBoard()
 }

@@ -11,14 +11,14 @@ import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.visual.ColorVisual
 
 class GameScene(
-    private val rootService: RootService
+    rootService: RootService
 ) : BoardGameScene(
     SCREEN_WIDTH,
     SCREEN_HEIGHT
 ), Refreshable {
 
     /**
-     * Represents the state of a turn.
+     * Represents the ui state in a single turn.
      */
     enum class UIState {
         TURN_READY_START,
@@ -32,9 +32,7 @@ class GameScene(
     }
 
     internal var state = UIState.TURN_READY_START
-
     internal var cardSelected: Card? = null
-
 
     val panePlayerLeft = PanePlayerLeft(rootService, this).apply {
         onMouseEntered = {

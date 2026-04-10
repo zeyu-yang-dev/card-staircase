@@ -14,6 +14,11 @@ import tools.aqua.bgw.components.uicomponents.Orientation
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.ImageVisual
 
+/**
+ * A [Pane] contains:
+ * [CardView]s representing draw stack and discard stack, and
+ * [Label] and [ListView] representing game log.
+ */
 class PaneStacks(
     private val rootService: RootService
 ) : Pane<ComponentView>(
