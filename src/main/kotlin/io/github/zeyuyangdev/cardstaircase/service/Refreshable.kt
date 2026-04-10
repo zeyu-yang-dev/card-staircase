@@ -27,5 +27,4 @@ interface Refreshable {
     fun refreshAfterStartTurn() {}
 
     fun refreshAfterEndTurn() {}
-
 }

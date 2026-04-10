@@ -21,15 +21,7 @@ class CSApplication : BoardGameApplication("Card Staircase"), Refreshable {
     /**
      * The main game scene displayed in the application.
      */
-    private val gameScene = GameScene(rootService).apply {
-        onKeyPressed = { event ->
-            if (event.keyCode in listOf(KeyCode.ENTER)) {
-                rootService.gameService.shuffleDrawStack(true)
-            } else if (event.keyCode in listOf(KeyCode.DELETE)) {
-                rootService.gameService.shuffleDrawStack(false)
-            }
-        }
-    }
+    private val gameScene = GameScene(rootService)
 
     private val resultMenuScene = ResultMenuScene(rootService).apply {
         replayButton.onMouseClicked = {

@@ -3,8 +3,10 @@ import io.github.zeyuyangdev.cardstaircase.entity.*
 
 class PlayerActionService(private val rootService: RootService): AbstractRefreshingService() {
 
-
-    // 一回合中最开始可以进行的动作
+    /**
+     * Destroys a card from the staircase.
+     * @param card The [Card] instance on top of one of the stacks in the staircase.
+     */
     fun destroyCard(card: Card) {
 
         val currentGame = rootService.currentGame
@@ -14,7 +16,7 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
 
         require(currentPlayer.score >= 5) {"The player must have at least 5 points to destroy a card."}
 
-        // remove the card from the stair and put it to the discard stack
+        // Removes the card from the stair and put it to the discard stack.
         for (stack in rootService.currentGame.stairs) {
             if (stack.isNotEmpty() && stack.peek() == card) {
                 rootService.currentGame.discardStack.push(stack.pop())
@@ -22,13 +24,13 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
             }
         }
 
-        // Decrease the score of the current player by 5
+        // Decreases the score of the current player by 5.
         currentPlayer.score -= 5
 
-        // Log the action of the current player
+        // Logs the action of the current player.
         currentGame.gameLog.add("${playerName} destroyed ${card} from stairs.")
 
-        // Mark that the stairs has been modified
+        // Marks that the stairs has been modified.
         currentGame.stairsModified = true
 
         // If the game end condition is fulfilled, call endGame()
@@ -42,9 +44,9 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
 
 
     /**
-     * Combine a card in hand with a card in the stairs.
+     * Matches a card in hand with a card in the stairs.
      * @param card The card in hand.
-     * @param target The card in the stairs.
+     * @param target The card in the staircase.
      */
     fun playCard(card: Card, target: Card) {
 
@@ -55,10 +57,10 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
         val currentPlayer = rootService.currentGame.players[currentPlayerIndex]
         val playerName = currentPlayer.name
 
-        // remove the card from the players hand
+        // RemoveS the card from the current player's hand.
         currentPlayer.hand.remove(card)
 
-        // remove the card from the stair
+        // Removes the card from the staircase.
         for (stack in currentGame.stairs) {
             if (stack.isNotEmpty() && stack.peek() == target) {
                 stack.pop()
@@ -66,14 +68,14 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
             }
         }
 
-        // Increase the score of the current player
+        // Increases the score of the current player.
         currentPlayer.score += card.value.toInt()
         currentPlayer.score += target.value.toInt()
 
-        // Log the action of the current player
+        // Logs the action of the current player.
         currentGame.gameLog.add("${playerName} matched ${card} with ${target}.")
 
-        // Mark that the stairs has been modified
+        // Marks that the stairs has been modified.
         rootService.currentGame.stairsModified = true
 
         // If Condition 1 fulfilled:
@@ -89,7 +91,7 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
 
     /**
      * Discards a card from hand, is an alternative action of playCard.
-     * @param card
+     * @param card The [Card] instance in player's hand.
      */
     fun discardCard(card: Card) {
 
@@ -98,61 +100,58 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
         val currentPlayer = rootService.currentGame.players[currentPlayerIndex]
         val playerName = currentPlayer.name
 
-        // Remove the card from current player's hand
+        // Removes the card from current player's hand.
         currentPlayer.hand.remove(card)
 
-        // The card goes to the discard stack
+        // The card goes to the discard stack.
         currentGame.discardStack.push(card)
 
-        // Log the action of the current player
+        // Logs the action of the current player.
         currentGame.gameLog.add("${playerName} discarded ${card} from hand.")
 
         onAllRefreshables { refreshAfterDiscardCard() }
     }
 
-    // 对应UI上的start按键
+    /**
+     * Invoked when the START TURN button is pressed.
+     */
     fun startTurn() {
         onAllRefreshables { refreshAfterStartTurn() }
     }
 
+    /**
+     * Invoked after the flip-close animation.
+     */
     fun endTurn() {
         val currentGame = rootService.currentGame
         val currentPlayerIndex = rootService.currentGame.currentPlayer
         val currentPlayer = rootService.currentGame.players[currentPlayerIndex]
 
-
-        // TODO: 检查判断条件
-        // 为了防止drawStack和discardStack同时为空，需要直接强制结束游戏
+        // Game end condition 2: When both draw and discard stacks are empty.
         if (currentGame.drawStack.isEmpty() && currentGame.discardStack.isEmpty()) {
             rootService.gameService.endGame()
             println("CardStaircase ended in condition 2.")
             return
         }
 
-        // The current player draws a card
-        // 注意drawStack和discardStack有可能同时空
+        // The current player draws a card.
         currentPlayer.hand.add(currentGame.drawStack.pop())
 
-        // switch the current player
+        // Switches the current player.
         rootService.currentGame.currentPlayer = (currentPlayerIndex + 1) % 2
 
-
-        // If the game end condition is fulfilled, call endGame()
+        // Game end condition 3:
+        // The draw stack is empty. && The staircase is not modified since the last shuffle.
         if (currentGame.drawStack.isEmpty() && currentGame.stairsModified == false) {
             rootService.gameService.endGame()
             println("CardStaircase ended in condition 3.")
         }
 
-        // shuffle the stack if the draw stack is empty and discard stack is not empty
+        // Shuffles the stack if the draw stack is empty. (The discard stack is not empty.)
         if (currentGame.drawStack.isEmpty() && currentGame.discardStack.isNotEmpty()) {
             rootService.gameService.shuffleStack()
         }
 
         onAllRefreshables { refreshAfterEndTurn() }
-
     }
-
-
-
-
 }
