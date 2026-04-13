@@ -23,6 +23,10 @@ emphasizing maintainability and a modular architecture (see [Architecture](#-arc
 The UI is structured into modular components, enabling clean composition and reuse.
 
 
+<p align="center">
+  <img src="screenshots/card_staircase_demo.gif" width="600"/>
+</p>
+
 ## 📸 Screenshots
 
 Below are some screenshots of the game in action:
@@ -31,13 +35,13 @@ Below are some screenshots of the game in action:
 
 ![Main Menu](screenshots/01_main_menu.png)
 
-### Gameplay – Start of Turn
+### Gameplay – After Selecting a Card
 
-![Start of Turn](screenshots/02_turn_start.png)
+![Start of Turn](screenshots/02_after_selected.png)
 
-### Gameplay – After Drawing a Card
+### Gameplay – Game Log Display
 
-![After Draw](screenshots/03_has_drawn.png)
+![After Draw](screenshots/03_game_log.png)
 
 ### Result Screen
 
