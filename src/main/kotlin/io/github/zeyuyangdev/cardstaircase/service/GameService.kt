@@ -42,6 +42,9 @@ class GameService(private val rootService: RootService): AbstractRefreshingServi
         // The rest cards go to the draw stack.
         currentGame.drawStack = drawStack
 
+        // Logs the first turn.
+        currentGame.gameLog.add("↑ ──────── Turn ${currentGame.turnCount} ────────")
+
         onAllRefreshables { refreshAfterStartNewGame() }
     }
 
