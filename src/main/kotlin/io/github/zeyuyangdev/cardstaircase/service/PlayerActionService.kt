@@ -152,6 +152,11 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
             rootService.gameService.shuffleStack()
         }
 
+        // Increases the turn count.
+        currentGame.turnCount += 1
+        // Logs the turn count.
+        currentGame.gameLog.add("↑ ──────── Turn ${currentGame.turnCount} ────────")
+
         onAllRefreshables { refreshAfterEndTurn() }
     }
 }
