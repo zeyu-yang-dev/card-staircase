@@ -12,6 +12,7 @@ import java.util.Stack
  * @property stairsModified flag set to true once a stair was changed during the current turn
  * @property drawStack      the stack representing the draw stack
  * @property discardStack   the stack representing the discard stack
+ * @property turnCount      the current turn number, starting from 1
  */
 data class CardStaircase(val players: List<Player>) {
     var currentPlayer: Int = 0
@@ -20,6 +21,7 @@ data class CardStaircase(val players: List<Player>) {
     var gameLog: MutableList<String> = mutableListOf()
     var drawStack: Stack<Card> = Stack()
     var discardStack: Stack<Card> = Stack()
+    var turnCount: Int = 1
 }
 
 
