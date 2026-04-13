@@ -37,7 +37,7 @@ class MainMenuScene(
         visual = TEXT_FIELD_VISUAL,
     )
 
-    val startGameButton = Button(
+    private val startGameButton = Button(
         posX = TEXT_FIELD_POS_X,
         posY = MMS_TEXT_FIELD_POS_Y + TEXT_FIELD_VERTICAL_DIS * 2,
         width = TEXT_FIELD_WIDTH,
@@ -65,7 +65,7 @@ class MainMenuScene(
         visual = RED_BTN_VISUAL
     )
 
-    val titleLabel = Label(
+    private val titleLabel = Label(
         width = MMS_TITLE_WIDTH,
         height = MMS_TITLE_HEIGHT,
         posX = MMS_TITLE_POS_X,
