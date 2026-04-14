@@ -28,7 +28,7 @@ class PlayerActionService(private val rootService: RootService): AbstractRefresh
         currentPlayer.score -= 5
 
         // Logs the action of the current player.
-        currentGame.gameLog.add("${playerName} destroyed ${card} from stairs.")
+        currentGame.gameLog.add("${playerName} destroyed ${card} from staircase.")
 
         // Marks that the stairs has been modified.
         currentGame.stairsModified = true

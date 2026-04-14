@@ -4,6 +4,8 @@ import tools.aqua.bgw.core.Color
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 
+
+
 const val SCREEN_WIDTH = 1920
 const val SCREEN_HEIGHT = 1080
 

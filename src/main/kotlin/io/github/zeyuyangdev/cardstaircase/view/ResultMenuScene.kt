@@ -62,7 +62,7 @@ class ResultMenuScene(
         visual = RED_BTN_VISUAL
     )
 
-    val winnerName = Label(
+    private val winnerName = Label(
         width = WINNER_NAME_WIDTH,
         height = WINNER_NAME_HEIGHT,
         posX = WINNER_NAME_POS_X,
@@ -71,7 +71,7 @@ class ResultMenuScene(
         visual = RMS_LIST_BG_VISUAL
     )
 
-    val winnerTitle = Label(
+    private val winnerTitle = Label(
         width = WINNER_TITLE_WIDTH,
         height = WINNER_TITLE_HEIGHT,
         posX = WINNER_TITLE_POS_X,
@@ -79,7 +79,7 @@ class ResultMenuScene(
         visual = ImageVisual("winner_title.png")
     )
 
-    val gameEndLabel = Label(
+    private val gameEndLabel = Label(
         width = GAME_END_LABEL_WIDTH,
         height = GAME_END_LABEL_HEIGHT,
         posX = GAME_END_LABEL_POS_X,
